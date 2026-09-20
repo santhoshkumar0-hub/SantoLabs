@@ -2576,6 +2576,15 @@ const OFFLINE_GAME =
 const STORAGE_KEY =
     "SANTOLABS_PROJECTS_V2";
 
+const DB_NAME =
+    "SANTOLABS_DATABASE";
+
+const DB_VERSION =
+    1;
+
+const PROJECT_STORE =
+    "projects";
+
 const USER_NAME_KEY =
     "SANTOLABS_USER_NAME";
 
@@ -2586,12 +2595,7 @@ const COMMENTS_KEY =
     "SANTOLABS_COMMENTS";
 
 
-let projects =
-    JSON.parse(
-        localStorage.getItem(
-            STORAGE_KEY
-        ) || "[]"
-    );
+let projects = [];
 
 let ownerLoggedIn =
     false;
@@ -2608,15 +2612,415 @@ let comments =
 
 
 /* =====================================================
+   INDEXED DB
+   FIX FOR PUBLISH STORAGE
+===================================================== */
+
+let santoDB = null;
+
+
+function openDatabase(){
+
+    return new Promise(
+        function(resolve,reject){
+
+            if(santoDB){
+
+                resolve(santoDB);
+
+                return;
+
+            }
+
+
+            if(!("indexedDB" in window)){
+
+                reject(
+                    new Error(
+                        "IndexedDB is not supported."
+                    )
+                );
+
+                return;
+
+            }
+
+
+            const request =
+                indexedDB.open(
+                    DB_NAME,
+                    DB_VERSION
+                );
+
+
+            request.onupgradeneeded =
+                function(event){
+
+                    const db =
+                        event.target.result;
+
+
+                    if(
+                        !db.objectStoreNames.contains(
+                            PROJECT_STORE
+                        )
+                    ){
+
+                        db.createObjectStore(
+                            PROJECT_STORE,
+                            {
+                                keyPath:"id"
+                            }
+                        );
+
+                    }
+
+                };
+
+
+            request.onsuccess =
+                function(event){
+
+                    santoDB =
+                        event.target.result;
+
+                    resolve(santoDB);
+
+                };
+
+
+            request.onerror =
+                function(){
+
+                    reject(
+                        request.error ||
+                        new Error(
+                            "Database could not open."
+                        )
+                    );
+
+                };
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   LOAD PROJECTS
+===================================================== */
+
+async function loadProjects(){
+
+    try{
+
+        const db =
+            await openDatabase();
+
+
+        const data =
+            await new Promise(
+                function(resolve,reject){
+
+                    const transaction =
+                        db.transaction(
+                            PROJECT_STORE,
+                            "readonly"
+                        );
+
+
+                    const store =
+                        transaction.objectStore(
+                            PROJECT_STORE
+                        );
+
+
+                    const request =
+                        store.getAll();
+
+
+                    request.onsuccess =
+                        function(){
+
+                            resolve(
+                                request.result || []
+                            );
+
+                        };
+
+
+                    request.onerror =
+                        function(){
+
+                            reject(
+                                request.error
+                            );
+
+                        };
+
+                }
+            );
+
+
+        if(data.length > 0){
+
+            projects = data;
+
+            return;
+
+        }
+
+
+        /* =================================================
+           MIGRATE OLD LOCALSTORAGE PROJECTS
+        ================================================= */
+
+        const oldData =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+
+        if(oldData){
+
+            try{
+
+                const oldProjects =
+                    JSON.parse(
+                        oldData
+                    );
+
+
+                if(
+                    Array.isArray(
+                        oldProjects
+                    )
+                ){
+
+                    projects =
+                        oldProjects;
+
+
+                    for(
+                        const project
+                        of projects
+                    ){
+
+                        await saveSingleProject(
+                            project
+                        );
+
+                    }
+
+
+                    localStorage.removeItem(
+                        STORAGE_KEY
+                    );
+
+                }
+
+            }catch(error){
+
+                console.error(
+                    "Old project data error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "Project database error:",
+            error
+        );
+
+
+        /* FALLBACK */
+
+        try{
+
+            projects =
+                JSON.parse(
+                    localStorage.getItem(
+                        STORAGE_KEY
+                    ) || "[]"
+                );
+
+        }catch(e){
+
+            projects = [];
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   SAVE ONE PROJECT
+===================================================== */
+
+function saveSingleProject(project){
+
+    return new Promise(
+        async function(resolve,reject){
+
+            try{
+
+                const db =
+                    await openDatabase();
+
+
+                const transaction =
+                    db.transaction(
+                        PROJECT_STORE,
+                        "readwrite"
+                    );
+
+
+                const store =
+                    transaction.objectStore(
+                        PROJECT_STORE
+                    );
+
+
+                const request =
+                    store.put(project);
+
+
+                request.onsuccess =
+                    function(){
+
+                        resolve();
+
+                    };
+
+
+                request.onerror =
+                    function(){
+
+                        reject(
+                            request.error
+                        );
+
+                    };
+
+            }catch(error){
+
+                reject(error);
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
    SAVE PROJECTS
 ===================================================== */
 
-function saveProjects(){
+async function saveProjects(){
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(projects)
-    );
+    try{
+
+        const db =
+            await openDatabase();
+
+
+        const transaction =
+            db.transaction(
+                PROJECT_STORE,
+                "readwrite"
+            );
+
+
+        const store =
+            transaction.objectStore(
+                PROJECT_STORE
+            );
+
+
+        store.clear();
+
+
+        for(
+            const project
+            of projects
+        ){
+
+            store.put(
+                project
+            );
+
+        }
+
+
+        await new Promise(
+            function(resolve,reject){
+
+                transaction.oncomplete =
+                    function(){
+
+                        resolve();
+
+                    };
+
+
+                transaction.onerror =
+                    function(){
+
+                        reject(
+                            transaction.error
+                        );
+
+                    };
+
+            }
+        );
+
+
+        return true;
+
+    }catch(error){
+
+        console.error(
+            "Database save failed:",
+            error
+        );
+
+
+        /*
+           FALLBACK TO LOCAL STORAGE
+        */
+
+        try{
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(projects)
+            );
+
+            return true;
+
+        }catch(storageError){
+
+            console.error(
+                storageError
+            );
+
+            return false;
+
+        }
+
+    }
 
 }
 
@@ -2627,10 +3031,25 @@ function saveProjects(){
 
 function saveComments(){
 
-    localStorage.setItem(
-        COMMENTS_KEY,
-        JSON.stringify(comments)
-    );
+    try{
+
+        localStorage.setItem(
+            COMMENTS_KEY,
+            JSON.stringify(comments)
+        );
+
+    }catch(error){
+
+        console.error(
+            "Comment save error:",
+            error
+        );
+
+        showToast(
+            "Could not save comment."
+        );
+
+    }
 
 }
 
@@ -2646,21 +3065,30 @@ function showToast(message){
             "toast"
         );
 
+
     toast.innerText =
         message;
+
 
     toast.style.display =
         "block";
 
-    setTimeout(
-        function(){
 
-            toast.style.display =
-                "none";
-
-        },
-        3000
+    clearTimeout(
+        window.santoToastTimer
     );
+
+
+    window.santoToastTimer =
+        setTimeout(
+            function(){
+
+                toast.style.display =
+                    "none";
+
+            },
+            3000
+        );
 
 }
 
@@ -2673,6 +3101,7 @@ function openModal(id){
 
     const modal =
         document.getElementById(id);
+
 
     if(modal){
 
@@ -2687,6 +3116,7 @@ function closeModal(id){
 
     const modal =
         document.getElementById(id);
+
 
     if(modal){
 
@@ -2725,8 +3155,10 @@ function safeURL(url){
 
     }
 
+
     const value =
         String(url).trim();
+
 
     if(
         value
@@ -2737,6 +3169,7 @@ function safeURL(url){
         return "#";
 
     }
+
 
     return value;
 
@@ -2751,7 +3184,9 @@ function openOwnerLogin(){
 
     if(ownerLoggedIn){
 
-        openModal("addModal");
+        openModal(
+            "addModal"
+        );
 
     }else{
 
@@ -2761,7 +3196,11 @@ function openOwnerLogin(){
             )
             .value = "";
 
-        openModal("loginModal");
+
+        openModal(
+            "loginModal"
+        );
+
 
         setTimeout(
             function(){
@@ -2790,28 +3229,35 @@ function ownerLogin(){
         )
         .value;
 
+
     if(password === OWNER_PASSWORD){
 
         ownerLoggedIn =
             true;
 
+
         closeModal(
             "loginModal"
         );
+
 
         document
             .getElementById(
                 "ownerButton"
             )
-            .innerText = "＋";
+            .innerText =
+                "＋";
+
 
         showToast(
             "Owner mode enabled."
         );
 
+
         openModal(
             "addModal"
         );
+
 
         renderComments();
 
@@ -2837,9 +3283,11 @@ function clearFile(inputId){
             inputId
         );
 
+
     if(input){
 
         input.value = "";
+
 
         showToast(
             "❌ File selection cancelled."
@@ -2880,7 +3328,9 @@ function buildFields(){
             "dynamicFields"
         );
 
+
     box.innerHTML = "";
+
 
     const types =
         getSelectedTypes();
@@ -3080,8 +3530,10 @@ function fileToDataURL(file){
 
             }
 
+
             const reader =
                 new FileReader();
+
 
             reader.onload =
                 function(){
@@ -3092,8 +3544,18 @@ function fileToDataURL(file){
 
                 };
 
+
             reader.onerror =
-                reject;
+                function(){
+
+                    reject(
+                        new Error(
+                            "File could not be read."
+                        )
+                    );
+
+                };
+
 
             reader.readAsDataURL(
                 file
@@ -3107,6 +3569,7 @@ function fileToDataURL(file){
 
 /* =====================================================
    PUBLISH
+   FIXED VERSION
 ===================================================== */
 
 async function publishProject(){
@@ -3122,13 +3585,31 @@ async function publishProject(){
     }
 
 
-    const name =
-        document
-        .getElementById(
+    const nameElement =
+        document.getElementById(
             "projectName"
-        )
-        .value
-        .trim();
+        );
+
+
+    const descriptionElement =
+        document.getElementById(
+            "projectDescription"
+        );
+
+
+    if(!nameElement){
+
+        showToast(
+            "Project form error."
+        );
+
+        return;
+
+    }
+
+
+    const name =
+        nameElement.value.trim();
 
 
     if(!name){
@@ -3137,227 +3618,499 @@ async function publishProject(){
             "Enter a project name."
         );
 
+        nameElement.focus();
+
         return;
 
     }
 
 
     const description =
-        document
-        .getElementById(
-            "projectDescription"
-        )
-        .value
-        .trim();
-
-
-    const iconFile =
-        document
-        .getElementById(
-            "projectIcon"
-        )
-        .files[0];
-
-
-    const icon =
-        await fileToDataURL(
-            iconFile
-        );
-
-
-    const project = {
-
-        id:Date.now(),
-
-        name:name,
-
-        description:description,
-
-        icon:icon,
-
-        link:null,
-
-        image:null,
-
-        video:null,
-
-        game:null,
-
-        web:null,
-
-        instruction:null
-
-    };
+        descriptionElement
+        ? descriptionElement.value.trim()
+        : "";
 
 
     const types =
         getSelectedTypes();
 
 
-    if(types.includes("link")){
+    /*
+       Prevent accidental empty project.
+    */
 
-        project.link = {
+    if(types.length === 0){
 
-            title:
-                document
-                .getElementById(
+        showToast(
+            "Choose at least one content type."
+        );
+
+        return;
+
+    }
+
+
+    const publishButton =
+        document.querySelector(
+            '#addModal .btn-primary[onclick="publishProject()"]'
+        );
+
+
+    if(publishButton){
+
+        publishButton.disabled =
+            true;
+
+        publishButton.innerText =
+            "⏳ Publishing...";
+
+    }
+
+
+    try{
+
+        /* =============================================
+           PROJECT ICON
+        ============================================= */
+
+        let icon = "";
+
+
+        const iconInput =
+            document.getElementById(
+                "projectIcon"
+            );
+
+
+        const iconFile =
+            iconInput &&
+            iconInput.files
+            ? iconInput.files[0]
+            : null;
+
+
+        if(iconFile){
+
+            /*
+               10 MB safety limit.
+               IndexedDB can handle much more,
+               but this prevents extremely large files.
+            */
+
+            if(
+                iconFile.size >
+                10 * 1024 * 1024
+            ){
+
+                throw new Error(
+                    "Project icon is larger than 10 MB."
+                );
+
+            }
+
+
+            icon =
+                await fileToDataURL(
+                    iconFile
+                );
+
+        }
+
+
+        /* =============================================
+           CREATE PROJECT
+        ============================================= */
+
+        const project = {
+
+            id:
+                Date.now() +
+                Math.floor(
+                    Math.random() * 1000
+                ),
+
+            name:name,
+
+            description:description,
+
+            icon:icon,
+
+            link:null,
+
+            image:null,
+
+            video:null,
+
+            game:null,
+
+            web:null,
+
+            instruction:null
+
+        };
+
+
+        /* =============================================
+           LINK
+        ============================================= */
+
+        if(types.includes("link")){
+
+            const titleElement =
+                document.getElementById(
                     "linkTitle"
-                )
-                .value
-                .trim(),
+                );
 
-            url:
-                document
-                .getElementById(
+
+            const urlElement =
+                document.getElementById(
                     "linkURL"
-                )
-                .value
-                .trim()
-
-        };
-
-    }
+                );
 
 
-    if(types.includes("image")){
+            project.link = {
 
-        const file =
-            document
-            .getElementById(
-                "contentImage"
-            )
-            .files[0];
+                title:
+                    titleElement
+                    ? titleElement.value.trim()
+                    : "",
 
-
-        if(file){
-
-            project.image = {
-
-                data:
-                    await fileToDataURL(
-                        file
-                    ),
-
-                name:
-                    file.name
+                url:
+                    urlElement
+                    ? urlElement.value.trim()
+                    : ""
 
             };
 
         }
 
-    }
+
+        /* =============================================
+           IMAGE
+        ============================================= */
+
+        if(types.includes("image")){
+
+            const input =
+                document.getElementById(
+                    "contentImage"
+                );
 
 
-    if(types.includes("video")){
-
-        const file =
-            document
-            .getElementById(
-                "contentVideo"
-            )
-            .files[0];
+            const file =
+                input &&
+                input.files
+                ? input.files[0]
+                : null;
 
 
-        if(file){
+            if(file){
 
-            project.video = {
+                if(
+                    file.size >
+                    20 * 1024 * 1024
+                ){
 
-                data:
-                    await fileToDataURL(
-                        file
-                    ),
+                    throw new Error(
+                        "Image is larger than 20 MB."
+                    );
 
-                name:
-                    file.name
+                }
 
-            };
+
+                project.image = {
+
+                    data:
+                        await fileToDataURL(
+                            file
+                        ),
+
+                    name:
+                        file.name
+
+                };
+
+            }
 
         }
 
-    }
+
+        /* =============================================
+           VIDEO
+        ============================================= */
+
+        if(types.includes("video")){
+
+            const input =
+                document.getElementById(
+                    "contentVideo"
+                );
 
 
-    if(types.includes("game")){
+            const file =
+                input &&
+                input.files
+                ? input.files[0]
+                : null;
 
-        project.game = {
 
-            title:
-                document
-                .getElementById(
+            if(file){
+
+                if(
+                    file.size >
+                    100 * 1024 * 1024
+                ){
+
+                    throw new Error(
+                        "Video is larger than 100 MB."
+                    );
+
+                }
+
+
+                project.video = {
+
+                    data:
+                        await fileToDataURL(
+                            file
+                        ),
+
+                    name:
+                        file.name
+
+                };
+
+            }
+
+        }
+
+
+        /* =============================================
+           GAME
+        ============================================= */
+
+        if(types.includes("game")){
+
+            const titleElement =
+                document.getElementById(
                     "gameTitle"
-                )
-                .value
-                .trim(),
+                );
 
-            url:
-                document
-                .getElementById(
+
+            const urlElement =
+                document.getElementById(
                     "gameURL"
-                )
-                .value
-                .trim()
-
-        };
-
-    }
+                );
 
 
-    if(types.includes("web")){
+            project.game = {
 
-        project.web = {
+                title:
+                    titleElement
+                    ? titleElement.value.trim()
+                    : "",
 
-            title:
-                document
-                .getElementById(
+                url:
+                    urlElement
+                    ? urlElement.value.trim()
+                    : ""
+
+            };
+
+        }
+
+
+        /* =============================================
+           WEB PROJECT
+        ============================================= */
+
+        if(types.includes("web")){
+
+            const titleElement =
+                document.getElementById(
                     "webTitle"
-                )
-                .value
-                .trim(),
+                );
 
-            url:
-                document
-                .getElementById(
+
+            const urlElement =
+                document.getElementById(
                     "webURL"
-                )
-                .value
-                .trim()
-
-        };
-
-    }
+                );
 
 
-    if(types.includes("instruction")){
+            project.web = {
 
-        project.instruction =
-            document
-            .getElementById(
-                "instructionText"
+                title:
+                    titleElement
+                    ? titleElement.value.trim()
+                    : "",
+
+                url:
+                    urlElement
+                    ? urlElement.value.trim()
+                    : ""
+
+            };
+
+        }
+
+
+        /* =============================================
+           INSTRUCTIONS
+        ============================================= */
+
+        if(types.includes("instruction")){
+
+            const instructionElement =
+                document.getElementById(
+                    "instructionText"
+                );
+
+
+            project.instruction =
+                instructionElement
+                ? instructionElement.value.trim()
+                : "";
+
+        }
+
+
+        /* =============================================
+           SAVE TO INDEXEDDB
+        ============================================= */
+
+        const db =
+            await openDatabase();
+
+
+        await new Promise(
+            function(resolve,reject){
+
+                const transaction =
+                    db.transaction(
+                        PROJECT_STORE,
+                        "readwrite"
+                    );
+
+
+                const store =
+                    transaction.objectStore(
+                        PROJECT_STORE
+                    );
+
+
+                const request =
+                    store.put(project);
+
+
+                request.onsuccess =
+                    function(){
+
+                        resolve();
+
+                    };
+
+
+                request.onerror =
+                    function(){
+
+                        reject(
+                            request.error ||
+                            new Error(
+                                "Could not save project."
+                            )
+                        );
+
+                    };
+
+            }
+        );
+
+
+        /* =============================================
+           UPDATE MEMORY
+        ============================================= */
+
+        projects.push(
+            project
+        );
+
+
+        /* =============================================
+           CLOSE + RESET
+        ============================================= */
+
+        closeModal(
+            "addModal"
+        );
+
+
+        resetForm();
+
+
+        renderEverything();
+
+
+        showToast(
+            "🚀 Published successfully!"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Publish error:",
+            error
+        );
+
+
+        let message =
+            error &&
+            error.message
+            ? error.message
+            : "Something went wrong while publishing.";
+
+
+        /*
+           Handle storage quota errors.
+        */
+
+        if(
+            error &&
+            (
+                error.name ===
+                "QuotaExceededError"
+                ||
+                String(error)
+                .toLowerCase()
+                .includes("quota")
             )
-            .value
-            .trim();
+        ){
+
+            message =
+                "Storage is full. Please use smaller files.";
+
+        }
+
+
+        showToast(
+            "❌ " + message
+        );
+
+
+    }finally{
+
+        if(publishButton){
+
+            publishButton.disabled =
+                false;
+
+            publishButton.innerText =
+                "🚀 Publish";
+
+        }
 
     }
-
-
-    projects.push(
-        project
-    );
-
-
-    saveProjects();
-
-    closeModal(
-        "addModal"
-    );
-
-    resetForm();
-
-    renderEverything();
-
-    showToast(
-        "🚀 Published successfully!"
-    );
 
 }
 
@@ -3368,32 +4121,56 @@ async function publishProject(){
 
 function resetForm(){
 
-    document
-        .getElementById(
+    const icon =
+        document.getElementById(
             "projectIcon"
-        )
-        .value = "";
+        );
 
 
-    document
-        .getElementById(
+    if(icon){
+
+        icon.value = "";
+
+    }
+
+
+    const name =
+        document.getElementById(
             "projectName"
-        )
-        .value = "";
+        );
 
 
-    document
-        .getElementById(
+    if(name){
+
+        name.value = "";
+
+    }
+
+
+    const description =
+        document.getElementById(
             "projectDescription"
-        )
-        .value = "";
+        );
 
 
-    document
-        .getElementById(
+    if(description){
+
+        description.value = "";
+
+    }
+
+
+    const dynamic =
+        document.getElementById(
             "dynamicFields"
-        )
-        .innerHTML = "";
+        );
+
+
+    if(dynamic){
+
+        dynamic.innerHTML = "";
+
+    }
 
 
     document
@@ -3412,7 +4189,7 @@ function resetForm(){
    DELETE PROJECT
 ===================================================== */
 
-function deleteProject(projectId){
+async function deleteProject(projectId){
 
     if(!ownerLoggedIn){
 
@@ -3473,19 +4250,81 @@ function deleteProject(projectId){
     }
 
 
-    projects =
-        projects.filter(
-            p => p.id !== projectId
+    try{
+
+        const db =
+            await openDatabase();
+
+
+        await new Promise(
+            function(resolve,reject){
+
+                const transaction =
+                    db.transaction(
+                        PROJECT_STORE,
+                        "readwrite"
+                    );
+
+
+                const store =
+                    transaction.objectStore(
+                        PROJECT_STORE
+                    );
+
+
+                const request =
+                    store.delete(
+                        projectId
+                    );
+
+
+                request.onsuccess =
+                    function(){
+
+                        resolve();
+
+                    };
+
+
+                request.onerror =
+                    function(){
+
+                        reject(
+                            request.error
+                        );
+
+                    };
+
+            }
         );
 
 
-    saveProjects();
+        projects =
+            projects.filter(
+                p => p.id !== projectId
+            );
 
-    renderEverything();
 
-    showToast(
-        "🗑️ Project deleted successfully."
-    );
+        renderEverything();
+
+
+        showToast(
+            "🗑️ Project deleted successfully."
+        );
+
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+
+        showToast(
+            "❌ Could not delete project."
+        );
+
+    }
 
 }
 
@@ -3500,6 +4339,7 @@ function renderProjects(){
         document.getElementById(
             "projectGrid"
         );
+
 
     const projectSection =
         document.getElementById(
@@ -4587,13 +5427,15 @@ function submitComment(){
 
     comments.push({
 
-        id:Date.now(),
+        id:
+            Date.now(),
 
         name:name,
 
         text:text,
 
-        date:new Date()
+        date:
+            new Date()
             .toLocaleString()
 
     });
@@ -5405,49 +6247,63 @@ if(!navigator.onLine){
    START
 ===================================================== */
 
-renderEverything();
+async function startSantoLabs(){
 
-renderComments();
-
-
-const existingName =
-    localStorage.getItem(
-        USER_NAME_KEY
-    );
+    await loadProjects();
 
 
-if(existingName){
+    renderEverything();
 
-    document
-        .getElementById(
-            "startupNameScreen"
-        )
-        .style.display =
-            "none";
+    renderComments();
 
 
-    document.body.classList.remove(
-        "startup-active"
-    );
+    const existingName =
+        localStorage.getItem(
+            USER_NAME_KEY
+        );
 
-}else{
 
-    setTimeout(
-        function(){
+    if(existingName){
 
-            document
-                .getElementById(
-                    "startupNameInput"
-                )
-                .focus();
+        document
+            .getElementById(
+                "startupNameScreen"
+            )
+            .style.display =
+                "none";
 
-        },
-        350
-    );
+
+        document.body.classList.remove(
+            "startup-active"
+        );
+
+    }else{
+
+        setTimeout(
+            function(){
+
+                document
+                    .getElementById(
+                        "startupNameInput"
+                    )
+                    .focus();
+
+            },
+            350
+        );
+
+    }
 
 }
 
+
+startSantoLabs();
+
 </script>
-<footer><h4>DM for App @ika chudama in instagram</h4></footer>
+
+<footer>
+    <h4>DM for App @ika chudama in instagram</h4>
+</footer>
+
 </body>
 </html>
