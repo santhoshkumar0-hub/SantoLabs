@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
 <title>Offline 2-Track Runner</title>
 
 <style>
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -27,7 +29,8 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:linear-gradient(#070711,#111126);
+    background:
+        linear-gradient(#070711,#111126);
 }
 
 #top{
@@ -240,10 +243,6 @@ button{
     background:rgba(7,7,17,.94);
 }
 
-#onlineBackModal{
-    z-index:999;
-}
-
 .panel{
     width:min(420px,90%);
     padding:30px;
@@ -299,13 +298,16 @@ button{
     background:linear-gradient(90deg,#8b5cf6,#ec4899);
 }
 
+
+/* PAUSE TEXT */
+
 #pausedText{
     position:absolute;
-    z-index:500;
+    z-index:80;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    background:rgba(7,7,17,.95);
+    background:rgba(7,7,17,.92);
     border:1px solid #8b5cf6;
     padding:12px 20px;
     border-radius:12px;
@@ -313,6 +315,13 @@ button{
     font-weight:bold;
     box-shadow:0 0 20px rgba(139,92,246,.5);
     display:none;
+}
+
+
+/* INTERNET RESTORED */
+
+#onlineBackModal{
+    z-index:200;
 }
 
 .onlineIcon{
@@ -338,6 +347,7 @@ button{
     background:linear-gradient(135deg,#22c55e,#8b5cf6);
 }
 
+
 @media(max-width:600px){
 
     #player{
@@ -361,282 +371,409 @@ button{
     .onlineButtons{
         flex-direction:column;
     }
+
 }
+
 </style>
 </head>
+
 
 <body>
 
 <div id="game">
 
-<div id="top">
 
-    <div class="box" id="connection">
-        ● OFFLINE READY
-    </div>
+    <!-- TOP -->
 
-    <button onclick="openRank()">
-        🏆 Rank
-    </button>
+    <div id="top">
 
-</div>
-
-
-<div id="hud">
-
-    <div class="hudbox">
-        <div class="hudtitle">DISTANCE</div>
-        <div class="hudvalue" id="score">0</div>
-    </div>
-
-    <div class="hudbox">
-        <div class="hudtitle">COINS</div>
-        <div class="hudvalue" id="coins">0</div>
-    </div>
-
-    <div class="hudbox">
-        <div class="hudtitle">BULLETS</div>
-        <div class="hudvalue" id="bullets">0</div>
-    </div>
-
-</div>
-
-
-<div id="road">
-
-    <div class="side left"></div>
-    <div class="side right"></div>
-
-    <div id="player">
-
-        <img src="alock1.png" alt="Player">
-
-    </div>
-
-</div>
-
-
-<div id="pausedText">
-    ⏸️ GAME PAUSED
-</div>
-
-
-<div id="controls">
-
-    <button class="control" onclick="moveLeft()">⬅️</button>
-
-    <button class="control" onclick="jump()">⬆️</button>
-
-    <button class="control" onclick="slide()">⬇️</button>
-
-    <button class="control" onclick="moveRight()">➡️</button>
-
-</div>
-
-
-<!-- START -->
-
-<div id="startScreen">
-
-    <div class="panel">
-
-        <div class="title">
-            OFFLINE RUNNER
+        <div class="box" id="connection">
+            ● OFFLINE READY
         </div>
 
-        <div class="subtitle">
-            2-Track Tactical Runner
-        </div>
-
-        <button
-            class="bigbutton"
-            onclick="startGame()">
-            ▶️ PLAY GAME
-        </button>
-
-        <button
-            class="bigbutton"
-            onclick="openRank()">
-            🏆 VIEW RANK
+        <button onclick="openRank()">
+            🏆 Rank
         </button>
 
     </div>
 
-</div>
 
+    <!-- HUD -->
 
-<!-- GAME OVER -->
+    <div id="hud">
 
-<div id="gameOver" class="hidden">
+        <div class="hudbox">
 
-    <div class="panel">
+            <div class="hudtitle">
+                DISTANCE
+            </div>
 
-        <div class="title">
-            GAME OVER
+            <div class="hudvalue" id="score">
+                0
+            </div>
+
         </div>
 
-        <div class="subtitle">
-            Run completed
+
+        <div class="hudbox">
+
+            <div class="hudtitle">
+                COINS
+            </div>
+
+            <div class="hudvalue" id="coins">
+                0
+            </div>
+
         </div>
 
-        <p>
-            Distance:
-            <b id="finalScore">0</b>
-        </p>
 
-        <p>
-            Coins:
-            <b id="finalCoins">0</b>
-        </p>
+        <div class="hudbox">
 
-        <p>
-            Bullets:
-            <b id="finalBullets">0</b>
-        </p>
+            <div class="hudtitle">
+                BULLETS
+            </div>
+
+            <div class="hudvalue" id="bullets">
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ROAD -->
+
+    <div id="road">
+
+        <div class="side left"></div>
+
+        <div class="side right"></div>
+
+
+        <div id="player">
+
+            <img
+                src="alock1.png"
+                alt="Player"
+            >
+
+        </div>
+
+    </div>
+
+
+    <!-- PAUSED TEXT -->
+
+    <div id="pausedText">
+        ⏸️ GAME PAUSED
+    </div>
+
+
+    <!-- CONTROLS -->
+
+    <div id="controls">
 
         <button
-            class="bigbutton"
-            onclick="startGame()">
-            🔄 RESTART
+            class="control"
+            onclick="moveLeft()">
+            ⬅️
         </button>
 
+
         <button
-            class="bigbutton"
-            onclick="goHome()">
-            🏠 HOME
+            class="control"
+            onclick="jump()">
+            ⬆️
+        </button>
+
+
+        <button
+            class="control"
+            onclick="slide()">
+            ⬇️
+        </button>
+
+
+        <button
+            class="control"
+            onclick="moveRight()">
+            ➡️
         </button>
 
     </div>
 
-</div>
 
+    <!-- START SCREEN -->
 
-<!-- RANK -->
+    <div id="startScreen">
 
-<div id="rankModal" class="hidden">
+        <div class="panel">
 
-    <div class="panel">
+            <div class="title">
+                OFFLINE RUNNER
+            </div>
 
-        <div class="rankIcon">
-            🏆
-        </div>
+            <div class="subtitle">
+                2-Track Tactical Runner
+            </div>
 
-        <div class="title">
-            <span id="rankName">BRONZE I</span>
-        </div>
-
-        <p>
-            EXP:
-            <b id="rankExp">0</b>
-        </p>
-
-        <div class="progress">
-            <div id="expBar"></div>
-        </div>
-
-        <p>
-            High Score:
-            <b id="highScore">0</b>
-        </p>
-
-        <p>
-            Total Runs:
-            <b id="totalGames">0</b>
-        </p>
-
-        <p>
-            Total Coins:
-            <b id="totalCoins">0</b>
-        </p>
-
-        <p>
-            Total Bullets:
-            <b id="totalBullets">0</b>
-        </p>
-
-        <button
-            class="bigbutton"
-            onclick="closeModal('rankModal')">
-            CLOSE
-        </button>
-
-        <button
-            class="bigbutton"
-            onclick="resetCareer()">
-            ♻️ RESET CAREER
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- INTERNET RESTORED -->
-
-<div id="onlineBackModal" class="hidden">
-
-    <div class="panel">
-
-        <div class="onlineIcon">
-            🌐
-        </div>
-
-        <div class="title">
-            CONNECTION RESTORED
-        </div>
-
-        <div class="subtitle">
-            Internet connection is back.
-            Your game has been paused.
-        </div>
-
-        <div class="onlineButtons">
 
             <button
-                class="bigbutton backButton"
-                onclick="backToWeb()">
-                ↩️ BACK TO WEB
+                class="bigbutton"
+                onclick="startGame()">
+
+                ▶️ PLAY GAME
+
             </button>
 
+
             <button
-                class="bigbutton continueButton"
-                onclick="continueGame()">
-                ▶️ CONTINUE GAME
+                class="bigbutton"
+                onclick="openRank()">
+
+                🏆 VIEW RANK
+
             </button>
 
         </div>
 
     </div>
 
-</div>
+
+    <!-- GAME OVER -->
+
+    <div id="gameOver" class="hidden">
+
+        <div class="panel">
+
+            <div class="title">
+                GAME OVER
+            </div>
+
+            <div class="subtitle">
+                Run completed
+            </div>
+
+
+            <p>
+                Distance:
+                <b id="finalScore">0</b>
+            </p>
+
+
+            <p>
+                Coins:
+                <b id="finalCoins">0</b>
+            </p>
+
+
+            <p>
+                Bullets:
+                <b id="finalBullets">0</b>
+            </p>
+
+
+            <button
+                class="bigbutton"
+                onclick="startGame()">
+
+                🔄 RESTART
+
+            </button>
+
+
+            <button
+                class="bigbutton"
+                onclick="goHome()">
+
+                🏠 HOME
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- RANK -->
+
+    <div id="rankModal" class="hidden">
+
+        <div class="panel">
+
+            <div class="rankIcon">
+                🏆
+            </div>
+
+
+            <div class="title">
+                <span id="rankName">
+                    BRONZE I
+                </span>
+            </div>
+
+
+            <p>
+                EXP:
+                <b id="rankExp">0</b>
+            </p>
+
+
+            <div class="progress">
+
+                <div id="expBar"></div>
+
+            </div>
+
+
+            <p>
+                High Score:
+                <b id="highScore">0</b>
+            </p>
+
+
+            <p>
+                Total Runs:
+                <b id="totalGames">0</b>
+            </p>
+
+
+            <p>
+                Total Coins:
+                <b id="totalCoins">0</b>
+            </p>
+
+
+            <p>
+                Total Bullets:
+                <b id="totalBullets">0</b>
+            </p>
+
+
+            <button
+                class="bigbutton"
+                onclick="closeModal('rankModal')">
+
+                CLOSE
+
+            </button>
+
+
+            <button
+                class="bigbutton"
+                onclick="resetCareer()">
+
+                ♻️ RESET CAREER
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ONLINE RESTORED POPUP -->
+
+    <div id="onlineBackModal" class="hidden">
+
+        <div class="panel">
+
+            <div class="onlineIcon">
+                🌐
+            </div>
+
+
+            <div class="title">
+                CONNECTION RESTORED
+            </div>
+
+
+            <div class="subtitle">
+
+                Internet connection is back.
+                Your game has been paused.
+
+            </div>
+
+
+            <div class="onlineButtons">
+
+                <button
+                    class="bigbutton backButton"
+                    onclick="backToWeb()">
+
+                    ↩️ BACK TO WEB
+
+                </button>
+
+
+                <button
+                    class="bigbutton continueButton"
+                    onclick="continueGame()">
+
+                    ▶️ CONTINUE GAME
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
 
 </div>
 
 
 <script>
 
-/* =====================================================
-   CAREER
-===================================================== */
+
+/* ==================================================
+   CAREER SYSTEM
+================================================== */
 
 const STORAGE_KEY =
-"offline_runner_career_data";
+    "offline_runner_career_data";
+
 
 const RANKS = [
 
-    {name:"BRONZE I",minExp:0},
+    {
+        name:"BRONZE I",
+        minExp:0
+    },
 
-    {name:"SILVER V",minExp:150},
+    {
+        name:"SILVER V",
+        minExp:150
+    },
 
-    {name:"GOLD III",minExp:400},
+    {
+        name:"GOLD III",
+        minExp:400
+    },
 
-    {name:"PLATINUM II",minExp:800},
+    {
+        name:"PLATINUM II",
+        minExp:800
+    },
 
-    {name:"DIAMOND I",minExp:1500},
+    {
+        name:"DIAMOND I",
+        minExp:1500
+    },
 
-    {name:"CROWN ACE",minExp:3000},
+    {
+        name:"CROWN ACE",
+        minExp:3000
+    },
 
-    {name:"CONQUEROR",minExp:5000}
+    {
+        name:"CONQUEROR",
+        minExp:5000
+    }
 
 ];
 
@@ -656,9 +793,9 @@ let careerData = {
 };
 
 
-/* =====================================================
-   GAME
-===================================================== */
+/* ==================================================
+   GAME STATE
+================================================== */
 
 let running = false;
 
@@ -681,6 +818,8 @@ let bullets = 0;
 
 let speed = 5;
 
+let playerY = 0;
+
 let jumping = false;
 
 let sliding = false;
@@ -694,92 +833,108 @@ let spawnTimer = 0;
 let animationFrame;
 
 
-/* =====================================================
-   NETWORK
-===================================================== */
+/* ==================================================
+   NETWORK STATE
+================================================== */
 
-let wasOffline = !navigator.onLine;
+let wasOffline =
+    !navigator.onLine;
 
-let networkCheckRunning = false;
 
-
-/* =====================================================
+/* ==================================================
    DOM
-===================================================== */
+================================================== */
 
 const player =
-document.getElementById("player");
+    document.getElementById("player");
 
 const road =
-document.getElementById("road");
+    document.getElementById("road");
 
 const connection =
-document.getElementById("connection");
+    document.getElementById("connection");
 
 const onlineBackModal =
-document.getElementById("onlineBackModal");
+    document.getElementById("onlineBackModal");
 
 const pausedText =
-document.getElementById("pausedText");
+    document.getElementById("pausedText");
 
 
-/* =====================================================
+/* ==================================================
    CAREER LOAD
-===================================================== */
+================================================== */
 
 function loadCareer(){
 
     try{
 
         const saved =
-        JSON.parse(
-            localStorage.getItem(
-                STORAGE_KEY
-            )
-        );
+            JSON.parse(
+                localStorage.getItem(
+                    STORAGE_KEY
+                )
+            );
+
 
         if(saved){
 
             careerData = {
+
                 ...careerData,
+
                 ...saved
+
             };
 
         }
 
-    }catch(error){
+    }
 
-        console.log(error);
+    catch(error){
+
+        console.log(
+            "Career load error:",
+            error
+        );
 
     }
 
 }
 
 
-/* =====================================================
+/* ==================================================
    CAREER SAVE
-===================================================== */
+================================================== */
 
 function saveCareer(){
 
     localStorage.setItem(
+
         STORAGE_KEY,
-        JSON.stringify(careerData)
+
+        JSON.stringify(
+            careerData
+        )
+
     );
 
 }
 
 
-/* =====================================================
-   RANK
-===================================================== */
+/* ==================================================
+   GET RANK
+================================================== */
 
 function getRank(){
 
     let current =
-    RANKS[0];
+        RANKS[0];
 
-    for(const rank of RANKS){
+
+    for(
+        const rank of RANKS
+    ){
 
         if(
             careerData.exp >=
@@ -792,71 +947,93 @@ function getRank(){
 
     }
 
+
     return current;
 
 }
 
 
+/* ==================================================
+   UPDATE RANK
+================================================== */
+
 function updateRankUI(){
 
     const rank =
-    getRank();
+        getRank();
+
 
     document.getElementById(
         "rankName"
     ).textContent =
-    rank.name;
+        rank.name;
+
 
     document.getElementById(
         "rankExp"
     ).textContent =
-    careerData.exp;
+        careerData.exp;
+
 
     document.getElementById(
         "highScore"
     ).textContent =
-    careerData.highScore;
+        careerData.highScore;
+
 
     document.getElementById(
         "totalGames"
     ).textContent =
-    careerData.totalGames;
+        careerData.totalGames;
+
 
     document.getElementById(
         "totalCoins"
     ).textContent =
-    careerData.totalCoins;
+        careerData.totalCoins;
+
 
     document.getElementById(
         "totalBullets"
     ).textContent =
-    careerData.totalBullets;
+        careerData.totalBullets;
 
 
-    const index =
-    RANKS.indexOf(rank);
+    const currentIndex =
+        RANKS.indexOf(rank);
 
-    const next =
-    RANKS[index + 1];
+
+    const nextRank =
+        RANKS[
+            currentIndex + 1
+        ];
 
 
     let percent = 100;
 
 
-    if(next){
+    if(nextRank){
+
+        const currentMin =
+            rank.minExp;
+
+
+        const nextMin =
+            nextRank.minExp;
+
 
         percent =
-        (
             (
-                careerData.exp -
-                rank.minExp
-            )
-            /
-            (
-                next.minExp -
-                rank.minExp
-            )
-        ) * 100;
+                (
+                    careerData.exp -
+                    currentMin
+                )
+                /
+                (
+                    nextMin -
+                    currentMin
+                )
+            ) * 100;
 
     }
 
@@ -864,29 +1041,31 @@ function updateRankUI(){
     document.getElementById(
         "expBar"
     ).style.width =
-    Math.max(
-        0,
-        Math.min(
-            100,
-            percent
-        )
-    ) + "%";
+
+        Math.max(
+            0,
+            Math.min(
+                100,
+                percent
+            )
+        ) + "%";
 
 }
 
 
-/* =====================================================
+/* ==================================================
    RANK MODAL
-===================================================== */
+================================================== */
 
 function openRank(){
 
     updateRankUI();
 
+
     document
-    .getElementById("rankModal")
-    .classList
-    .remove("hidden");
+        .getElementById("rankModal")
+        .classList
+        .remove("hidden");
 
 }
 
@@ -894,16 +1073,16 @@ function openRank(){
 function closeModal(id){
 
     document
-    .getElementById(id)
-    .classList
-    .add("hidden");
+        .getElementById(id)
+        .classList
+        .add("hidden");
 
 }
 
 
-/* =====================================================
-   RESET
-===================================================== */
+/* ==================================================
+   RESET CAREER
+================================================== */
 
 function resetCareer(){
 
@@ -940,9 +1119,9 @@ function resetCareer(){
 }
 
 
-/* =====================================================
-   START
-===================================================== */
+/* ==================================================
+   START GAME
+================================================== */
 
 function startGame(){
 
@@ -959,12 +1138,12 @@ function startGame(){
 
 
     onlineBackModal
-    .classList
-    .add("hidden");
+        .classList
+        .add("hidden");
 
 
     pausedText.style.display =
-    "none";
+        "none";
 
 
     lane = 0;
@@ -989,20 +1168,25 @@ function startGame(){
 
 
     player.style.left =
-    lanes[lane];
+        lanes[lane];
 
 
     document.getElementById(
         "score"
-    ).textContent = "0";
+    ).textContent =
+        "0";
+
 
     document.getElementById(
         "coins"
-    ).textContent = "0";
+    ).textContent =
+        "0";
+
 
     document.getElementById(
         "bullets"
-    ).textContent = "0";
+    ).textContent =
+        "0";
 
 
     document.getElementById(
@@ -1023,22 +1207,23 @@ function startGame(){
 
 
     lastTime =
-    performance.now();
+        performance.now();
+
 
     spawnTimer = 0;
 
 
     animationFrame =
-    requestAnimationFrame(
-        gameLoop
-    );
+        requestAnimationFrame(
+            gameLoop
+        );
 
 }
 
 
-/* =====================================================
-   LOOP
-===================================================== */
+/* ==================================================
+   GAME LOOP
+================================================== */
 
 function gameLoop(time){
 
@@ -1057,10 +1242,10 @@ function gameLoop(time){
 
 
     const delta =
-    Math.min(
-        32,
-        time - lastTime
-    );
+        Math.min(
+            32,
+            time - lastTime
+        );
 
 
     lastTime = time;
@@ -1075,18 +1260,18 @@ function gameLoop(time){
     ){
 
         animationFrame =
-        requestAnimationFrame(
-            gameLoop
-        );
+            requestAnimationFrame(
+                gameLoop
+            );
 
     }
 
 }
 
 
-/* =====================================================
+/* ==================================================
    UPDATE
-===================================================== */
+================================================== */
 
 function update(delta){
 
@@ -1101,34 +1286,35 @@ function update(delta){
 
 
     const dt =
-    delta / 16.67;
+        delta / 16.67;
 
 
     score +=
-    speed *
-    .012 *
-    dt;
+        speed *
+        .012 *
+        dt;
 
 
     document.getElementById(
         "score"
     ).textContent =
-    Math.floor(score);
+        Math.floor(score);
 
 
     speed +=
-    .0008 *
-    dt;
+        .0008 *
+        dt;
 
 
     speed =
-    Math.min(
-        11,
-        speed
-    );
+        Math.min(
+            11,
+            speed
+        );
 
 
-    spawnTimer -= delta;
+    spawnTimer -=
+        delta;
 
 
     if(
@@ -1139,18 +1325,18 @@ function update(delta){
 
 
         spawnTimer =
-        Math.max(
-            430,
-            850 -
-            score * 2
-        );
+            Math.max(
+                430,
+                850 -
+                score * 2
+            );
 
     }
 
 
     for(
         let i =
-        objects.length - 1;
+            objects.length - 1;
 
         i >= 0;
 
@@ -1158,15 +1344,15 @@ function update(delta){
     ){
 
         const obj =
-        objects[i];
+            objects[i];
 
 
         obj.y +=
-        speed * dt;
+            speed * dt;
 
 
         obj.el.style.transform =
-        `translate(-50%,${obj.y}px)`;
+            `translate(-50%,${obj.y}px)`;
 
 
         if(
@@ -1183,7 +1369,7 @@ function update(delta){
                 document.getElementById(
                     "coins"
                 ).textContent =
-                coins;
+                    coins;
 
 
                 obj.el.remove();
@@ -1208,7 +1394,7 @@ function update(delta){
                 document.getElementById(
                     "bullets"
                 ).textContent =
-                bullets;
+                    bullets;
 
 
                 obj.el.remove();
@@ -1262,14 +1448,14 @@ function update(delta){
 }
 
 
-/* =====================================================
-   SPAWN
-===================================================== */
+/* ==================================================
+   SPAWN OBJECT
+================================================== */
 
 function spawnObject(){
 
     const random =
-    Math.random();
+        Math.random();
 
 
     let type;
@@ -1299,27 +1485,29 @@ function spawnObject(){
 
 
     const laneIndex =
-    Math.floor(
-        Math.random() * 2
-    );
+        Math.floor(
+            Math.random() * 2
+        );
 
 
     const el =
-    document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     el.className =
-    `object ${type}`;
+        `object ${type}`;
 
 
     el.style.left =
-    lanes[laneIndex];
+        lanes[laneIndex];
 
 
     road.appendChild(el);
 
 
-    objects.push({
+    const object = {
 
         el:el,
 
@@ -1329,14 +1517,19 @@ function spawnObject(){
 
         y:-90
 
-    });
+    };
+
+
+    objects.push(
+        object
+    );
 
 }
 
 
-/* =====================================================
+/* ==================================================
    COLLISION
-===================================================== */
+================================================== */
 
 function checkCollision(obj){
 
@@ -1350,13 +1543,15 @@ function checkCollision(obj){
 
 
     const playerY =
-    window.innerHeight - 105;
+        window.innerHeight -
+        105;
 
 
     const difference =
-    Math.abs(
-        obj.y - playerY
-    );
+        Math.abs(
+            obj.y -
+            playerY
+        );
 
 
     if(
@@ -1392,9 +1587,9 @@ function checkCollision(obj){
 }
 
 
-/* =====================================================
-   REMOVE
-===================================================== */
+/* ==================================================
+   REMOVE OBJECTS
+================================================== */
 
 function removeAllObjects(){
 
@@ -1416,9 +1611,9 @@ function removeAllObjects(){
 }
 
 
-/* =====================================================
+/* ==================================================
    LEFT
-===================================================== */
+================================================== */
 
 function moveLeft(){
 
@@ -1433,21 +1628,21 @@ function moveLeft(){
 
 
     lane =
-    Math.max(
-        0,
-        lane - 1
-    );
+        Math.max(
+            0,
+            lane - 1
+        );
 
 
     player.style.left =
-    lanes[lane];
+        lanes[lane];
 
 }
 
 
-/* =====================================================
+/* ==================================================
    RIGHT
-===================================================== */
+================================================== */
 
 function moveRight(){
 
@@ -1462,21 +1657,21 @@ function moveRight(){
 
 
     lane =
-    Math.min(
-        1,
-        lane + 1
-    );
+        Math.min(
+            1,
+            lane + 1
+        );
 
 
     player.style.left =
-    lanes[lane];
+        lanes[lane];
 
 }
 
 
-/* =====================================================
+/* ==================================================
    JUMP
-===================================================== */
+================================================== */
 
 function jump(){
 
@@ -1506,6 +1701,7 @@ function jump(){
                 "jumping"
             );
 
+
             jumping = false;
 
         },
@@ -1515,9 +1711,9 @@ function jump(){
 }
 
 
-/* =====================================================
+/* ==================================================
    SLIDE
-===================================================== */
+================================================== */
 
 function slide(){
 
@@ -1547,6 +1743,7 @@ function slide(){
                 "sliding"
             );
 
+
             sliding = false;
 
         },
@@ -1556,9 +1753,9 @@ function slide(){
 }
 
 
-/* =====================================================
+/* ==================================================
    GAME OVER
-===================================================== */
+================================================== */
 
 function gameOver(){
 
@@ -1566,7 +1763,8 @@ function gameOver(){
 
     gamePaused = false;
 
-    onlineNotificationOpen = false;
+    onlineNotificationOpen =
+        false;
 
 
     cancelAnimationFrame(
@@ -1575,18 +1773,18 @@ function gameOver(){
 
 
     const finalDistance =
-    Math.floor(score);
+        Math.floor(score);
 
 
     careerData.totalGames++;
 
 
     careerData.totalCoins +=
-    coins;
+        coins;
 
 
     careerData.totalBullets +=
-    bullets;
+        bullets;
 
 
     if(
@@ -1595,20 +1793,24 @@ function gameOver(){
     ){
 
         careerData.highScore =
-        finalDistance;
+            finalDistance;
 
     }
 
 
-    careerData.exp +=
+    const earnedExp =
 
-    Math.floor(
-        finalDistance / 10
-    )
-    +
-    coins
-    +
-    bullets;
+        Math.floor(
+            finalDistance / 10
+        )
+        +
+        coins
+        +
+        bullets;
+
+
+    careerData.exp +=
+        earnedExp;
 
 
     saveCareer();
@@ -1619,19 +1821,19 @@ function gameOver(){
     document.getElementById(
         "finalScore"
     ).textContent =
-    finalDistance;
+        finalDistance;
 
 
     document.getElementById(
         "finalCoins"
     ).textContent =
-    coins;
+        coins;
 
 
     document.getElementById(
         "finalBullets"
     ).textContent =
-    bullets;
+        bullets;
 
 
     document.getElementById(
@@ -1643,9 +1845,9 @@ function gameOver(){
 }
 
 
-/* =====================================================
+/* ==================================================
    HOME
-===================================================== */
+================================================== */
 
 function goHome(){
 
@@ -1653,7 +1855,8 @@ function goHome(){
 
     gamePaused = false;
 
-    onlineNotificationOpen = false;
+    onlineNotificationOpen =
+        false;
 
 
     cancelAnimationFrame(
@@ -1665,12 +1868,12 @@ function goHome(){
 
 
     onlineBackModal
-    .classList
-    .add("hidden");
+        .classList
+        .add("hidden");
 
 
     pausedText.style.display =
-    "none";
+        "none";
 
 
     document.getElementById(
@@ -1689,9 +1892,9 @@ function goHome(){
 }
 
 
-/* =====================================================
-   CONNECTION DISPLAY
-===================================================== */
+/* ==================================================
+   UPDATE CONNECTION DISPLAY
+================================================== */
 
 function updateConnection(){
 
@@ -1700,69 +1903,72 @@ function updateConnection(){
     ){
 
         connection.textContent =
-        "● ONLINE";
+            "● ONLINE";
+
 
         connection.style.color =
-        "#22c55e";
+            "#22c55e";
 
     }
 
     else{
 
         connection.textContent =
-        "● OFFLINE READY";
+            "● OFFLINE READY";
+
 
         connection.style.color =
-        "#06b6d4";
+            "#06b6d4";
 
     }
 
 }
 
 
-/* =====================================================
+/* ==================================================
    INTERNET LOST
-===================================================== */
+================================================== */
 
 function internetLost(){
 
-    wasOffline = true;
-
     updateConnection();
+
+
+    wasOffline = true;
 
 }
 
 
-/* =====================================================
+/* ==================================================
    INTERNET RESTORED
-===================================================== */
+================================================== */
 
 function internetRestored(){
 
     updateConnection();
 
 
-    if(
-        !wasOffline
-    ){
+    /*
+       Only show the popup when:
 
-        return;
-
-    }
-
-
-    wasOffline = false;
-
+       1. Game is running
+       2. Game isn't already paused
+       3. Popup isn't already open
+       4. We were previously offline
+    */
 
     if(
         running &&
         !gamePaused &&
-        !onlineNotificationOpen
+        !onlineNotificationOpen &&
+        wasOffline
     ){
 
         gamePaused = true;
 
-        onlineNotificationOpen = true;
+
+        onlineNotificationOpen =
+            true;
 
 
         cancelAnimationFrame(
@@ -1771,81 +1977,38 @@ function internetRestored(){
 
 
         pausedText.style.display =
-        "block";
+            "block";
 
 
         onlineBackModal
-        .classList
-        .remove("hidden");
+            .classList
+            .remove("hidden");
 
     }
+
+
+    wasOffline = false;
 
 }
 
 
-/* =====================================================
-   REAL INTERNET CHECK
-===================================================== */
+/* ==================================================
+   BROWSER ONLINE EVENT
+================================================== */
 
-async function checkRealInternet(){
+window.addEventListener(
+    "online",
+    () => {
 
-    try{
-
-        /*
-           This checks the actual internet,
-           not just navigator.onLine.
-        */
-
-        const controller =
-        new AbortController();
-
-
-        const timeout =
-        setTimeout(
-            () => controller.abort(),
-            3000
-        );
-
-
-        await fetch(
-            "https://www.gstatic.com/generate_204",
-            {
-                method:"GET",
-                cache:"no-store",
-                mode:"no-cors",
-                signal:controller.signal
-            }
-        );
-
-
-        clearTimeout(timeout);
-
-
-        if(wasOffline){
-
-            internetRestored();
-
-        }
-
+        internetRestored();
 
     }
-
-    catch(error){
-
-        if(!wasOffline){
-
-            internetLost();
-
-        }
-
-    }
-
-}
+);
 
 
-/* =====================================================
-   NETWORK EVENTS
-===================================================== */
+/* ==================================================
+   BROWSER OFFLINE EVENT
+================================================== */
 
 window.addEventListener(
     "offline",
@@ -1857,29 +2020,51 @@ window.addEventListener(
 );
 
 
-window.addEventListener(
-    "online",
-    () => {
-
-        checkRealInternet();
-
-    }
-);
-
-
-/* =====================================================
-   CONTINUOUS NETWORK CHECK
-===================================================== */
+/* ==================================================
+   EXTRA NETWORK CHECK
+================================================== */
 
 setInterval(
-    checkRealInternet,
+    () => {
+
+        const currentlyOnline =
+            navigator.onLine;
+
+
+        if(
+            !currentlyOnline
+        ){
+
+            if(
+                !wasOffline
+            ){
+
+                internetLost();
+
+            }
+
+        }
+
+        else{
+
+            if(
+                wasOffline
+            ){
+
+                internetRestored();
+
+            }
+
+        }
+
+    },
     1000
 );
 
 
-/* =====================================================
+/* ==================================================
    BACK TO WEB
-===================================================== */
+================================================== */
 
 function backToWeb(){
 
@@ -1887,7 +2072,8 @@ function backToWeb(){
 
     gamePaused = false;
 
-    onlineNotificationOpen = false;
+    onlineNotificationOpen =
+        false;
 
 
     cancelAnimationFrame(
@@ -1899,60 +2085,75 @@ function backToWeb(){
 
 
     pausedText.style.display =
-    "none";
+        "none";
 
 
     onlineBackModal
-    .classList
-    .add("hidden");
+        .classList
+        .add("hidden");
 
+
+    /*
+       YOUR MAIN WEBSITE
+    */
 
     window.location.href =
-    "index.html";
+        "index.html";
 
 }
 
 
-/* =====================================================
-   CONTINUE
-===================================================== */
+/* ==================================================
+   CONTINUE GAME
+================================================== */
 
 function continueGame(){
 
     onlineBackModal
-    .classList
-    .add("hidden");
+        .classList
+        .add("hidden");
 
 
-    onlineNotificationOpen = false;
+    onlineNotificationOpen =
+        false;
 
 
     pausedText.style.display =
-    "none";
+        "none";
 
 
-    if(running){
+    if(
+        running
+    ){
 
         gamePaused = false;
 
 
+        /*
+           This is important.
+
+           It prevents the time spent
+           in the popup from making
+           objects suddenly jump forward.
+        */
+
         lastTime =
-        performance.now();
+            performance.now();
 
 
         animationFrame =
-        requestAnimationFrame(
-            gameLoop
-        );
+            requestAnimationFrame(
+                gameLoop
+            );
 
     }
 
 }
 
 
-/* =====================================================
+/* ==================================================
    KEYBOARD
-===================================================== */
+================================================== */
 
 document.addEventListener(
     "keydown",
@@ -2006,9 +2207,9 @@ document.addEventListener(
 );
 
 
-/* =====================================================
+/* ==================================================
    SWIPE
-===================================================== */
+================================================== */
 
 let touchStartX = 0;
 
@@ -2030,15 +2231,15 @@ document.addEventListener(
 
 
         const touch =
-        e.changedTouches[0];
+            e.changedTouches[0];
 
 
         touchStartX =
-        touch.clientX;
+            touch.clientX;
 
 
         touchStartY =
-        touch.clientY;
+            touch.clientY;
 
     },
     {
@@ -2062,17 +2263,17 @@ document.addEventListener(
 
 
         const touch =
-        e.changedTouches[0];
+            e.changedTouches[0];
 
 
         const dx =
-        touch.clientX -
-        touchStartX;
+            touch.clientX -
+            touchStartX;
 
 
         const dy =
-        touch.clientY -
-        touchStartY;
+            touch.clientY -
+            touchStartY;
 
 
         if(
@@ -2125,9 +2326,9 @@ document.addEventListener(
 );
 
 
-/* =====================================================
-   STARTUP
-===================================================== */
+/* ==================================================
+   INITIALIZE
+================================================== */
 
 loadCareer();
 

@@ -6300,7 +6300,13 @@ async function startSantoLabs(){
 startSantoLabs();
 
 </script>
-
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js")
+        .then(() => console.log("Offline system ready"))
+        .catch(err => console.log("Offline system error:", err));
+}
+</script>
 <footer>
     <h4>DM for App @ika chudama in instagram</h4>
 </footer>
