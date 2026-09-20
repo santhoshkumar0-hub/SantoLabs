@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<title>Offline 2-Track Runner</title>
+<title>Offline 3D Runner</title>
 
 <style>
-
 *{
     box-sizing:border-box;
     margin:0;
@@ -19,7 +19,7 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#070711;
+    background:#05050c;
     color:white;
     font-family:Arial,sans-serif;
 }
@@ -30,32 +30,33 @@ html,body{
     height:100%;
     overflow:hidden;
     background:
-        linear-gradient(#070711,#111126);
+        radial-gradient(circle at 50% 30%,#20204a 0%,#0c0c1d 45%,#030308 100%);
 }
+
+/* TOP */
 
 #top{
     position:absolute;
-    z-index:20;
+    z-index:100;
     top:10px;
     left:10px;
     right:10px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:8px;
 }
 
 .box{
-    background:rgba(10,10,25,.88);
+    background:rgba(8,8,22,.9);
     border:1px solid #8b5cf6;
     border-radius:10px;
     padding:8px 12px;
-    box-shadow:0 0 12px rgba(139,92,246,.3);
+    box-shadow:0 0 12px rgba(139,92,246,.35);
 }
 
 #connection{
     font-size:12px;
-    color:#22c55e;
+    color:#06b6d4;
 }
 
 button{
@@ -68,9 +69,11 @@ button{
     cursor:pointer;
 }
 
+/* HUD */
+
 #hud{
     position:absolute;
-    z-index:15;
+    z-index:100;
     top:65px;
     left:50%;
     transform:translateX(-50%);
@@ -83,7 +86,7 @@ button{
     text-align:center;
     padding:7px 10px;
     border-radius:10px;
-    background:rgba(7,7,17,.8);
+    background:rgba(7,7,17,.85);
     border:1px solid #3b82f6;
 }
 
@@ -97,116 +100,183 @@ button{
     font-weight:bold;
 }
 
+/* 3D WORLD */
+
+#world{
+    position:absolute;
+    inset:0;
+    perspective:700px;
+    perspective-origin:50% 35%;
+    overflow:hidden;
+}
+
+/* ROAD */
+
 #road{
     position:absolute;
     left:50%;
-    top:0;
-    width:min(650px,100vw);
-    height:100%;
-    transform:translateX(-50%);
-    overflow:hidden;
-    perspective:500px;
-    background:#15151d;
+    top:-15%;
+    width:min(720px,110vw);
+    height:120%;
+    transform:
+        translateX(-50%)
+        rotateX(58deg)
+        translateZ(-20px);
+    transform-origin:50% 0%;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #1b1b28 0px,
+            #1b1b28 45px,
+            #202033 46px,
+            #202033 90px
+        );
+    border-left:12px solid #8b5cf6;
+    border-right:12px solid #ec4899;
+    box-shadow:
+        0 0 40px rgba(139,92,246,.4),
+        inset 0 0 50px rgba(0,0,0,.8);
 }
 
-#road:before{
+/* ROAD CENTER LINE */
+
+#road::before{
     content:"";
     position:absolute;
     left:50%;
     top:0;
-    width:4px;
+    width:8px;
     height:100%;
     transform:translateX(-50%);
-    background:repeating-linear-gradient(
-        to bottom,
-        #8b5cf6 0 35px,
-        transparent 35px 70px
-    );
-    opacity:.45;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #ffffff 0px,
+            #ffffff 55px,
+            transparent 55px,
+            transparent 105px
+        );
+    opacity:.65;
 }
 
-.side{
+/* ROAD SIDE LIGHTS */
+
+.roadLight{
     position:absolute;
     top:0;
-    width:10px;
+    width:5px;
     height:100%;
-    background:linear-gradient(#ec4899,#8b5cf6);
+    background:linear-gradient(
+        to bottom,
+        #ec4899,
+        #8b5cf6,
+        #06b6d4
+    );
+    box-shadow:0 0 15px #8b5cf6;
 }
 
-.side.left{
+.roadLight.left{
     left:0;
 }
 
-.side.right{
+.roadLight.right{
     right:0;
 }
 
+/* PLAYER */
+
 #player{
     position:absolute;
-    z-index:10;
-    bottom:105px;
+    z-index:50;
+    bottom:95px;
     left:25%;
-    width:90px;
-    height:140px;
+    width:95px;
+    height:145px;
     transform:translateX(-50%);
-    transition:left .12s linear;
+    transition:
+        left .12s ease-out,
+        bottom .18s ease-out,
+        height .15s ease-out;
+    filter:
+        drop-shadow(0 12px 10px rgba(0,0,0,.8))
+        drop-shadow(0 0 12px rgba(139,92,246,.7));
 }
 
 #player img{
     width:100%;
     height:100%;
     object-fit:contain;
-    filter:drop-shadow(0 0 10px rgba(139,92,246,.8));
     user-select:none;
     pointer-events:none;
 }
 
 #player.jumping{
-    bottom:235px;
+    bottom:225px;
 }
 
 #player.sliding{
-    height:75px;
-    bottom:105px;
+    height:78px;
+    bottom:95px;
 }
+
+/* OBJECTS */
 
 .object{
     position:absolute;
-    z-index:8;
+    z-index:40;
     left:25%;
-    transform:translateX(-50%);
+    top:0;
+    transform:
+        translateX(-50%)
+        translateY(-100px)
+        scale(.25);
+    transform-origin:center center;
     will-change:transform;
 }
 
 .obstacle{
     width:65px;
     height:65px;
-    border-radius:10px;
-    background:linear-gradient(135deg,#ef4444,#7f1d1d);
-    border:2px solid #ff7777;
-    box-shadow:0 0 15px rgba(239,68,68,.6);
+    border-radius:12px;
+    background:
+        linear-gradient(135deg,#ff5555,#7f1d1d);
+    border:2px solid #ff9999;
+    box-shadow:
+        0 0 20px rgba(239,68,68,.8),
+        inset 0 0 15px rgba(255,255,255,.15);
 }
 
 .coin{
     width:35px;
     height:35px;
     border-radius:50%;
-    background:#facc15;
-    border:4px solid #fff2;
-    box-shadow:0 0 18px #facc15;
+    background:
+        radial-gradient(circle at 35% 30%,#fff,#fde047 20%,#eab308 55%,#a16207);
+    border:3px solid #fff7;
+    box-shadow:
+        0 0 20px #facc15;
 }
 
 .bullet{
     width:18px;
     height:45px;
-    border-radius:8px 8px 3px 3px;
-    background:linear-gradient(#ddd,#777);
-    box-shadow:0 0 12px #06b6d4;
+    border-radius:8px 8px 4px 4px;
+    background:
+        linear-gradient(
+            to right,
+            #555,
+            #eee,
+            #777
+        );
+    box-shadow:
+        0 0 15px #06b6d4;
 }
+
+/* CONTROLS */
 
 #controls{
     position:absolute;
-    z-index:30;
+    z-index:120;
     left:0;
     right:0;
     bottom:18px;
@@ -220,7 +290,7 @@ button{
     height:55px;
     border-radius:15px;
     border:1px solid #8b5cf6;
-    background:rgba(10,10,25,.85);
+    background:rgba(10,10,25,.88);
     color:white;
     font-size:23px;
 }
@@ -230,17 +300,19 @@ button{
     background:#8b5cf6;
 }
 
+/* SCREENS */
+
 #startScreen,
 #gameOver,
 #rankModal,
 #onlineBackModal{
     position:absolute;
-    z-index:100;
+    z-index:200;
     inset:0;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:rgba(7,7,17,.94);
+    background:rgba(3,3,10,.94);
 }
 
 .panel{
@@ -248,15 +320,21 @@ button{
     padding:30px;
     border-radius:20px;
     text-align:center;
-    background:rgba(15,15,35,.96);
+    background:rgba(15,15,35,.97);
     border:1px solid #8b5cf6;
-    box-shadow:0 0 35px rgba(139,92,246,.35);
+    box-shadow:0 0 35px rgba(139,92,246,.4);
 }
 
 .title{
     font-size:30px;
     font-weight:900;
-    background:linear-gradient(90deg,#8b5cf6,#ec4899,#06b6d4);
+    background:
+        linear-gradient(
+            90deg,
+            #8b5cf6,
+            #ec4899,
+            #06b6d4
+        );
     -webkit-background-clip:text;
     color:transparent;
     margin-bottom:10px;
@@ -278,6 +356,8 @@ button{
     display:none!important;
 }
 
+/* RANK */
+
 .rankIcon{
     font-size:45px;
     margin-bottom:10px;
@@ -295,15 +375,15 @@ button{
 #expBar{
     width:0%;
     height:100%;
-    background:linear-gradient(90deg,#8b5cf6,#ec4899);
+    background:
+        linear-gradient(90deg,#8b5cf6,#ec4899);
 }
 
-
-/* PAUSE TEXT */
+/* PAUSE */
 
 #pausedText{
     position:absolute;
-    z-index:80;
+    z-index:180;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
@@ -317,12 +397,7 @@ button{
     display:none;
 }
 
-
-/* INTERNET RESTORED */
-
-#onlineBackModal{
-    z-index:200;
-}
+/* ONLINE */
 
 .onlineIcon{
     font-size:50px;
@@ -346,7 +421,6 @@ button{
 .continueButton{
     background:linear-gradient(135deg,#22c55e,#8b5cf6);
 }
-
 
 @media(max-width:600px){
 
@@ -372,21 +446,18 @@ button{
         flex-direction:column;
     }
 
+    #road{
+        width:125vw;
+    }
 }
-
 </style>
 </head>
-
 
 <body>
 
 <div id="game">
 
-
-    <!-- TOP -->
-
     <div id="top">
-
         <div class="box" id="connection">
             ● OFFLINE READY
         </div>
@@ -394,153 +465,103 @@ button{
         <button onclick="openRank()">
             🏆 Rank
         </button>
-
     </div>
-
-
-    <!-- HUD -->
 
     <div id="hud">
 
         <div class="hudbox">
-
-            <div class="hudtitle">
-                DISTANCE
-            </div>
-
-            <div class="hudvalue" id="score">
-                0
-            </div>
-
+            <div class="hudtitle">DISTANCE</div>
+            <div class="hudvalue" id="score">0</div>
         </div>
 
-
         <div class="hudbox">
-
-            <div class="hudtitle">
-                COINS
-            </div>
-
-            <div class="hudvalue" id="coins">
-                0
-            </div>
-
+            <div class="hudtitle">COINS</div>
+            <div class="hudvalue" id="coins">0</div>
         </div>
 
-
         <div class="hudbox">
-
-            <div class="hudtitle">
-                BULLETS
-            </div>
-
-            <div class="hudvalue" id="bullets">
-                0
-            </div>
-
+            <div class="hudtitle">BULLETS</div>
+            <div class="hudvalue" id="bullets">0</div>
         </div>
 
     </div>
 
+    <!-- 3D WORLD -->
 
-    <!-- ROAD -->
+    <div id="world">
 
-    <div id="road">
+        <div id="road">
 
-        <div class="side left"></div>
+            <div class="roadLight left"></div>
+            <div class="roadLight right"></div>
 
-        <div class="side right"></div>
-
+        </div>
 
         <div id="player">
 
             <img
                 src="alock1.png"
                 alt="Player"
+                draggable="false"
             >
 
         </div>
 
     </div>
 
-
-    <!-- PAUSED TEXT -->
-
     <div id="pausedText">
         ⏸️ GAME PAUSED
     </div>
-
-
-    <!-- CONTROLS -->
 
     <div id="controls">
 
         <button
             class="control"
-            onclick="moveLeft()">
-            ⬅️
-        </button>
-
+            onclick="moveLeft()">⬅️</button>
 
         <button
             class="control"
-            onclick="jump()">
-            ⬆️
-        </button>
-
+            onclick="jump()">⬆️</button>
 
         <button
             class="control"
-            onclick="slide()">
-            ⬇️
-        </button>
-
+            onclick="slide()">⬇️</button>
 
         <button
             class="control"
-            onclick="moveRight()">
-            ➡️
-        </button>
+            onclick="moveRight()">➡️</button>
 
     </div>
 
-
-    <!-- START SCREEN -->
+    <!-- START -->
 
     <div id="startScreen">
 
         <div class="panel">
 
             <div class="title">
-                OFFLINE RUNNER
+                3D OFFLINE RUNNER
             </div>
 
             <div class="subtitle">
                 2-Track Tactical Runner
             </div>
 
-
             <button
                 class="bigbutton"
                 onclick="startGame()">
-
                 ▶️ PLAY GAME
-
             </button>
-
 
             <button
                 class="bigbutton"
                 onclick="openRank()">
-
                 🏆 VIEW RANK
-
             </button>
 
         </div>
 
     </div>
-
 
     <!-- GAME OVER -->
 
@@ -556,46 +577,36 @@ button{
                 Run completed
             </div>
 
-
             <p>
                 Distance:
                 <b id="finalScore">0</b>
             </p>
-
 
             <p>
                 Coins:
                 <b id="finalCoins">0</b>
             </p>
 
-
             <p>
                 Bullets:
                 <b id="finalBullets">0</b>
             </p>
 
-
             <button
                 class="bigbutton"
                 onclick="startGame()">
-
                 🔄 RESTART
-
             </button>
-
 
             <button
                 class="bigbutton"
                 onclick="goHome()">
-
                 🏠 HOME
-
             </button>
 
         </div>
 
     </div>
-
 
     <!-- RANK -->
 
@@ -603,118 +614,86 @@ button{
 
         <div class="panel">
 
-            <div class="rankIcon">
-                🏆
-            </div>
-
+            <div class="rankIcon">🏆</div>
 
             <div class="title">
-                <span id="rankName">
-                    BRONZE I
-                </span>
+                <span id="rankName">BRONZE I</span>
             </div>
-
 
             <p>
                 EXP:
                 <b id="rankExp">0</b>
             </p>
 
-
             <div class="progress">
-
                 <div id="expBar"></div>
-
             </div>
-
 
             <p>
                 High Score:
                 <b id="highScore">0</b>
             </p>
 
-
             <p>
                 Total Runs:
                 <b id="totalGames">0</b>
             </p>
-
 
             <p>
                 Total Coins:
                 <b id="totalCoins">0</b>
             </p>
 
-
             <p>
                 Total Bullets:
                 <b id="totalBullets">0</b>
             </p>
 
-
             <button
                 class="bigbutton"
                 onclick="closeModal('rankModal')">
-
                 CLOSE
-
             </button>
-
 
             <button
                 class="bigbutton"
                 onclick="resetCareer()">
-
                 ♻️ RESET CAREER
-
             </button>
 
         </div>
 
     </div>
 
-
-    <!-- ONLINE RESTORED POPUP -->
+    <!-- ONLINE RESTORED -->
 
     <div id="onlineBackModal" class="hidden">
 
         <div class="panel">
 
-            <div class="onlineIcon">
-                🌐
-            </div>
-
+            <div class="onlineIcon">🌐</div>
 
             <div class="title">
                 CONNECTION RESTORED
             </div>
 
-
             <div class="subtitle">
-
                 Internet connection is back.
                 Your game has been paused.
-
             </div>
-
 
             <div class="onlineButtons">
 
                 <button
                     class="bigbutton backButton"
                     onclick="backToWeb()">
-
                     ↩️ BACK TO WEB
-
                 </button>
-
 
                 <button
                     class="bigbutton continueButton"
                     onclick="continueGame()">
-
                     ▶️ CONTINUE GAME
-
                 </button>
 
             </div>
@@ -723,133 +702,76 @@ button{
 
     </div>
 
-
 </div>
-
 
 <script>
 
+/* ==============================
+   CAREER
+============================== */
 
-/* ==================================================
-   CAREER SYSTEM
-================================================== */
-
-const STORAGE_KEY =
-    "offline_runner_career_data";
-
+const STORAGE_KEY = "offline_runner_career_data";
 
 const RANKS = [
-
-    {
-        name:"BRONZE I",
-        minExp:0
-    },
-
-    {
-        name:"SILVER V",
-        minExp:150
-    },
-
-    {
-        name:"GOLD III",
-        minExp:400
-    },
-
-    {
-        name:"PLATINUM II",
-        minExp:800
-    },
-
-    {
-        name:"DIAMOND I",
-        minExp:1500
-    },
-
-    {
-        name:"CROWN ACE",
-        minExp:3000
-    },
-
-    {
-        name:"CONQUEROR",
-        minExp:5000
-    }
-
+    {name:"BRONZE I",minExp:0},
+    {name:"SILVER V",minExp:150},
+    {name:"GOLD III",minExp:400},
+    {name:"PLATINUM II",minExp:800},
+    {name:"DIAMOND I",minExp:1500},
+    {name:"CROWN ACE",minExp:3000},
+    {name:"CONQUEROR",minExp:5000}
 ];
 
-
 let careerData = {
-
     highScore:0,
-
     totalGames:0,
-
     totalCoins:0,
-
     totalBullets:0,
-
     exp:0
-
 };
 
-
-/* ==================================================
+/* ==============================
    GAME STATE
-================================================== */
+============================== */
 
 let running = false;
-
 let gamePaused = false;
-
 let onlineNotificationOpen = false;
 
 let lane = 0;
 
-const lanes = [
-    "25%",
-    "75%"
-];
+const lanes = ["25%","75%"];
 
 let score = 0;
-
 let coins = 0;
-
 let bullets = 0;
 
 let speed = 5;
 
-let playerY = 0;
-
 let jumping = false;
-
 let sliding = false;
 
 let objects = [];
 
 let lastTime = 0;
-
 let spawnTimer = 0;
-
 let animationFrame;
 
+/* ==============================
+   NETWORK
+============================== */
 
-/* ==================================================
-   NETWORK STATE
-================================================== */
+let wasOffline = !navigator.onLine;
 
-let wasOffline =
-    !navigator.onLine;
-
-
-/* ==================================================
+/* ==============================
    DOM
-================================================== */
+============================== */
 
 const player =
     document.getElementById("player");
 
-const road =
-    document.getElementById("road");
+const world =
+    document.getElementById("world");
 
 const connection =
     document.getElementById("connection");
@@ -860,10 +782,9 @@ const onlineBackModal =
 const pausedText =
     document.getElementById("pausedText");
 
-
-/* ==================================================
+/* ==============================
    CAREER LOAD
-================================================== */
+============================== */
 
 function loadCareer(){
 
@@ -871,204 +792,111 @@ function loadCareer(){
 
         const saved =
             JSON.parse(
-                localStorage.getItem(
-                    STORAGE_KEY
-                )
+                localStorage.getItem(STORAGE_KEY)
             );
-
 
         if(saved){
 
             careerData = {
-
                 ...careerData,
-
                 ...saved
-
             };
 
         }
 
-    }
+    }catch(error){
 
-    catch(error){
-
-        console.log(
-            "Career load error:",
-            error
-        );
+        console.log("Career load error");
 
     }
-
 }
 
-
-/* ==================================================
+/* ==============================
    CAREER SAVE
-================================================== */
+============================== */
 
 function saveCareer(){
 
     localStorage.setItem(
-
         STORAGE_KEY,
-
-        JSON.stringify(
-            careerData
-        )
-
+        JSON.stringify(careerData)
     );
 
 }
 
-
-/* ==================================================
-   GET RANK
-================================================== */
+/* ==============================
+   RANK
+============================== */
 
 function getRank(){
 
-    let current =
-        RANKS[0];
+    let current = RANKS[0];
 
+    for(const rank of RANKS){
 
-    for(
-        const rank of RANKS
-    ){
-
-        if(
-            careerData.exp >=
-            rank.minExp
-        ){
-
+        if(careerData.exp >= rank.minExp){
             current = rank;
-
         }
 
     }
 
-
     return current;
-
 }
-
-
-/* ==================================================
-   UPDATE RANK
-================================================== */
 
 function updateRankUI(){
 
-    const rank =
-        getRank();
+    const rank = getRank();
 
-
-    document.getElementById(
-        "rankName"
-    ).textContent =
+    document.getElementById("rankName").textContent =
         rank.name;
 
-
-    document.getElementById(
-        "rankExp"
-    ).textContent =
+    document.getElementById("rankExp").textContent =
         careerData.exp;
 
-
-    document.getElementById(
-        "highScore"
-    ).textContent =
+    document.getElementById("highScore").textContent =
         careerData.highScore;
 
-
-    document.getElementById(
-        "totalGames"
-    ).textContent =
+    document.getElementById("totalGames").textContent =
         careerData.totalGames;
 
-
-    document.getElementById(
-        "totalCoins"
-    ).textContent =
+    document.getElementById("totalCoins").textContent =
         careerData.totalCoins;
 
-
-    document.getElementById(
-        "totalBullets"
-    ).textContent =
+    document.getElementById("totalBullets").textContent =
         careerData.totalBullets;
 
-
-    const currentIndex =
-        RANKS.indexOf(rank);
-
-
-    const nextRank =
-        RANKS[
-            currentIndex + 1
-        ];
-
+    const index = RANKS.indexOf(rank);
+    const next = RANKS[index + 1];
 
     let percent = 100;
 
-
-    if(nextRank){
-
-        const currentMin =
-            rank.minExp;
-
-
-        const nextMin =
-            nextRank.minExp;
-
+    if(next){
 
         percent =
             (
-                (
-                    careerData.exp -
-                    currentMin
-                )
-                /
-                (
-                    nextMin -
-                    currentMin
-                )
+                (careerData.exp - rank.minExp) /
+                (next.minExp - rank.minExp)
             ) * 100;
 
     }
 
-
-    document.getElementById(
-        "expBar"
-    ).style.width =
-
-        Math.max(
-            0,
-            Math.min(
-                100,
-                percent
-            )
-        ) + "%";
-
+    document.getElementById("expBar").style.width =
+        Math.max(0,Math.min(100,percent)) + "%";
 }
 
-
-/* ==================================================
+/* ==============================
    RANK MODAL
-================================================== */
+============================== */
 
 function openRank(){
 
     updateRankUI();
 
-
     document
         .getElementById("rankModal")
         .classList
         .remove("hidden");
-
 }
-
 
 function closeModal(id){
 
@@ -1076,436 +904,289 @@ function closeModal(id){
         .getElementById(id)
         .classList
         .add("hidden");
-
 }
 
-
-/* ==================================================
-   RESET CAREER
-================================================== */
+/* ==============================
+   RESET
+============================== */
 
 function resetCareer(){
 
-    if(
-        !confirm(
-            "Reset all career progress?"
-        )
-    ){
-
+    if(!confirm("Reset all career progress?")){
         return;
-
     }
 
-
     careerData = {
-
         highScore:0,
-
         totalGames:0,
-
         totalCoins:0,
-
         totalBullets:0,
-
         exp:0
-
     };
 
-
     saveCareer();
-
     updateRankUI();
-
 }
 
-
-/* ==================================================
-   START GAME
-================================================== */
+/* ==============================
+   START
+============================== */
 
 function startGame(){
 
-    cancelAnimationFrame(
-        animationFrame
-    );
-
+    cancelAnimationFrame(animationFrame);
 
     running = true;
-
     gamePaused = false;
-
     onlineNotificationOpen = false;
 
-
-    onlineBackModal
-        .classList
-        .add("hidden");
-
-
-    pausedText.style.display =
-        "none";
-
+    onlineBackModal.classList.add("hidden");
+    pausedText.style.display = "none";
 
     lane = 0;
 
     score = 0;
-
     coins = 0;
-
     bullets = 0;
 
     speed = 5;
 
     jumping = false;
-
     sliding = false;
-
 
     player.classList.remove(
         "jumping",
         "sliding"
     );
 
+    player.style.left = lanes[lane];
 
-    player.style.left =
-        lanes[lane];
+    document.getElementById("score").textContent = "0";
+    document.getElementById("coins").textContent = "0";
+    document.getElementById("bullets").textContent = "0";
 
+    document
+        .getElementById("startScreen")
+        .classList
+        .add("hidden");
 
-    document.getElementById(
-        "score"
-    ).textContent =
-        "0";
-
-
-    document.getElementById(
-        "coins"
-    ).textContent =
-        "0";
-
-
-    document.getElementById(
-        "bullets"
-    ).textContent =
-        "0";
-
-
-    document.getElementById(
-        "startScreen"
-    ).classList.add(
-        "hidden"
-    );
-
-
-    document.getElementById(
-        "gameOver"
-    ).classList.add(
-        "hidden"
-    );
-
+    document
+        .getElementById("gameOver")
+        .classList
+        .add("hidden");
 
     removeAllObjects();
 
-
-    lastTime =
-        performance.now();
-
+    lastTime = performance.now();
 
     spawnTimer = 0;
 
-
     animationFrame =
-        requestAnimationFrame(
-            gameLoop
-        );
-
+        requestAnimationFrame(gameLoop);
 }
 
-
-/* ==================================================
+/* ==============================
    GAME LOOP
-================================================== */
+============================== */
 
 function gameLoop(time){
 
-    if(!running){
-
+    if(!running || gamePaused){
         return;
-
     }
-
-
-    if(gamePaused){
-
-        return;
-
-    }
-
 
     const delta =
-        Math.min(
-            32,
-            time - lastTime
-        );
-
+        Math.min(32,time-lastTime);
 
     lastTime = time;
 
-
     update(delta);
 
-
-    if(
-        running &&
-        !gamePaused
-    ){
+    if(running && !gamePaused){
 
         animationFrame =
-            requestAnimationFrame(
-                gameLoop
-            );
-
+            requestAnimationFrame(gameLoop);
     }
-
 }
 
-
-/* ==================================================
-   UPDATE
-================================================== */
+/* ==============================
+   3D UPDATE
+============================== */
 
 function update(delta){
 
-    if(
-        !running ||
-        gamePaused
-    ){
-
+    if(!running || gamePaused){
         return;
-
     }
 
+    const dt = delta / 16.67;
 
-    const dt =
-        delta / 16.67;
+    score += speed * .012 * dt;
 
-
-    score +=
-        speed *
-        .012 *
-        dt;
-
-
-    document.getElementById(
-        "score"
-    ).textContent =
+    document.getElementById("score").textContent =
         Math.floor(score);
 
+    speed += .0008 * dt;
 
-    speed +=
-        .0008 *
-        dt;
+    speed = Math.min(11,speed);
 
+    spawnTimer -= delta;
 
-    speed =
-        Math.min(
-            11,
-            speed
-        );
-
-
-    spawnTimer -=
-        delta;
-
-
-    if(
-        spawnTimer <= 0
-    ){
+    if(spawnTimer <= 0){
 
         spawnObject();
 
-
         spawnTimer =
             Math.max(
-                430,
-                850 -
-                score * 2
+                380,
+                800 - score * 2
             );
-
     }
 
-
     for(
-        let i =
-            objects.length - 1;
-
-        i >= 0;
-
+        let i=objects.length-1;
+        i>=0;
         i--
     ){
 
-        const obj =
-            objects[i];
+        const obj = objects[i];
 
+        /*
+            y = depth.
+            0 = far away.
+            1 = player.
+        */
 
-        obj.y +=
-            speed * dt;
+        obj.depth +=
+            0.0085 *
+            speed *
+            dt;
 
+        const depth =
+            Math.min(1.25,obj.depth);
+
+        /*
+            Perspective movement.
+            Objects move from the horizon
+            toward the player.
+        */
+
+        const horizonY =
+            window.innerHeight * .24;
+
+        const playerY =
+            window.innerHeight - 150;
+
+        const y =
+            horizonY +
+            (playerY-horizonY) *
+            Math.pow(depth,1.65);
+
+        /*
+            Objects become larger as they
+            approach the player.
+        */
+
+        const scale =
+            .22 +
+            Math.pow(depth,1.8) * 1.35;
 
         obj.el.style.transform =
-            `translate(-50%,${obj.y}px)`;
+            `translate(-50%,${y}px) scale(${scale})`;
 
+        /*
+            Collision zone.
+        */
 
         if(
-            checkCollision(obj)
+            depth > .88 &&
+            depth < 1.12 &&
+            obj.lane === lane
         ){
 
-            if(
-                obj.type === "coin"
-            ){
+            if(obj.type === "coin"){
 
                 coins++;
 
-
-                document.getElementById(
-                    "coins"
-                ).textContent =
-                    coins;
-
+                document.getElementById("coins")
+                    .textContent = coins;
 
                 obj.el.remove();
 
-                objects.splice(
-                    i,
-                    1
-                );
+                objects.splice(i,1);
 
                 continue;
-
             }
 
-
-            if(
-                obj.type === "bullet"
-            ){
+            if(obj.type === "bullet"){
 
                 bullets++;
 
-
-                document.getElementById(
-                    "bullets"
-                ).textContent =
-                    bullets;
-
+                document.getElementById("bullets")
+                    .textContent = bullets;
 
                 obj.el.remove();
 
-                objects.splice(
-                    i,
-                    1
-                );
+                objects.splice(i,1);
 
                 continue;
-
             }
 
+            if(obj.type === "obstacle"){
 
-            if(
-                obj.type === "obstacle"
-            ){
-
-                if(
-                    !jumping &&
-                    !sliding
-                ){
+                if(!jumping && !sliding){
 
                     gameOver();
-
                     return;
-
                 }
-
             }
-
         }
 
-
-        if(
-            obj.y >
-            window.innerHeight + 100
-        ){
+        if(depth > 1.18){
 
             obj.el.remove();
 
-            objects.splice(
-                i,
-                1
-            );
-
+            objects.splice(i,1);
         }
-
     }
-
 }
 
-
-/* ==================================================
-   SPAWN OBJECT
-================================================== */
+/* ==============================
+   SPAWN
+============================== */
 
 function spawnObject(){
 
-    const random =
-        Math.random();
-
+    const random = Math.random();
 
     let type;
 
-
-    if(
-        random < .20
-    ){
+    if(random < .20){
 
         type = "coin";
 
-    }
-
-    else if(
-        random < .34
-    ){
+    }else if(random < .34){
 
         type = "bullet";
 
-    }
-
-    else{
+    }else{
 
         type = "obstacle";
-
     }
 
-
     const laneIndex =
-        Math.floor(
-            Math.random() * 2
-        );
-
+        Math.floor(Math.random()*2);
 
     const el =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     el.className =
         `object ${type}`;
 
-
     el.style.left =
         lanes[laneIndex];
 
-
-    road.appendChild(el);
-
+    world.appendChild(el);
 
     const object = {
 
@@ -1515,163 +1196,65 @@ function spawnObject(){
 
         lane:laneIndex,
 
-        y:-90
+        depth:0
 
     };
 
-
-    objects.push(
-        object
-    );
-
+    objects.push(object);
 }
 
-
-/* ==================================================
-   COLLISION
-================================================== */
-
-function checkCollision(obj){
-
-    if(
-        obj.lane !== lane
-    ){
-
-        return false;
-
-    }
-
-
-    const playerY =
-        window.innerHeight -
-        105;
-
-
-    const difference =
-        Math.abs(
-            obj.y -
-            playerY
-        );
-
-
-    if(
-        difference > 70
-    ){
-
-        return false;
-
-    }
-
-
-    if(
-        obj.type === "obstacle"
-    ){
-
-        if(
-            jumping ||
-            sliding
-        ){
-
-            return false;
-
-        }
-
-
-        return true;
-
-    }
-
-
-    return true;
-
-}
-
-
-/* ==================================================
-   REMOVE OBJECTS
-================================================== */
+/* ==============================
+   REMOVE
+============================== */
 
 function removeAllObjects(){
 
-    objects.forEach(
-        obj => {
+    objects.forEach(obj => {
 
-            if(obj.el){
-
-                obj.el.remove();
-
-            }
-
+        if(obj.el){
+            obj.el.remove();
         }
-    );
 
+    });
 
     objects = [];
-
 }
 
-
-/* ==================================================
+/* ==============================
    LEFT
-================================================== */
+============================== */
 
 function moveLeft(){
 
-    if(
-        !running ||
-        gamePaused
-    ){
-
+    if(!running || gamePaused){
         return;
-
     }
 
-
-    lane =
-        Math.max(
-            0,
-            lane - 1
-        );
-
+    lane = Math.max(0,lane-1);
 
     player.style.left =
         lanes[lane];
-
 }
 
-
-/* ==================================================
+/* ==============================
    RIGHT
-================================================== */
+============================== */
 
 function moveRight(){
 
-    if(
-        !running ||
-        gamePaused
-    ){
-
+    if(!running || gamePaused){
         return;
-
     }
 
-
-    lane =
-        Math.min(
-            1,
-            lane + 1
-        );
-
+    lane = Math.min(1,lane+1);
 
     player.style.left =
         lanes[lane];
-
 }
 
-
-/* ==================================================
+/* ==============================
    JUMP
-================================================== */
+============================== */
 
 function jump(){
 
@@ -1680,40 +1263,25 @@ function jump(){
         gamePaused ||
         jumping
     ){
-
         return;
-
     }
-
 
     jumping = true;
 
+    player.classList.add("jumping");
 
-    player.classList.add(
-        "jumping"
-    );
+    setTimeout(() => {
 
+        player.classList.remove("jumping");
 
-    setTimeout(
-        () => {
+        jumping = false;
 
-            player.classList.remove(
-                "jumping"
-            );
-
-
-            jumping = false;
-
-        },
-        650
-    );
-
+    },650);
 }
 
-
-/* ==================================================
+/* ==============================
    SLIDE
-================================================== */
+============================== */
 
 function slide(){
 
@@ -1722,40 +1290,25 @@ function slide(){
         gamePaused ||
         sliding
     ){
-
         return;
-
     }
-
 
     sliding = true;
 
+    player.classList.add("sliding");
 
-    player.classList.add(
-        "sliding"
-    );
+    setTimeout(() => {
 
+        player.classList.remove("sliding");
 
-    setTimeout(
-        () => {
+        sliding = false;
 
-            player.classList.remove(
-                "sliding"
-            );
-
-
-            sliding = false;
-
-        },
-        600
-    );
-
+    },600);
 }
 
-
-/* ==================================================
+/* ==============================
    GAME OVER
-================================================== */
+============================== */
 
 function gameOver(){
 
@@ -1763,29 +1316,18 @@ function gameOver(){
 
     gamePaused = false;
 
-    onlineNotificationOpen =
-        false;
+    onlineNotificationOpen = false;
 
-
-    cancelAnimationFrame(
-        animationFrame
-    );
-
+    cancelAnimationFrame(animationFrame);
 
     const finalDistance =
         Math.floor(score);
 
-
     careerData.totalGames++;
 
+    careerData.totalCoins += coins;
 
-    careerData.totalCoins +=
-        coins;
-
-
-    careerData.totalBullets +=
-        bullets;
-
+    careerData.totalBullets += bullets;
 
     if(
         finalDistance >
@@ -1794,168 +1336,107 @@ function gameOver(){
 
         careerData.highScore =
             finalDistance;
-
     }
 
-
     const earnedExp =
-
-        Math.floor(
-            finalDistance / 10
-        )
+        Math.floor(finalDistance/10)
         +
         coins
         +
         bullets;
 
-
-    careerData.exp +=
-        earnedExp;
-
+    careerData.exp += earnedExp;
 
     saveCareer();
 
     updateRankUI();
 
+    document.getElementById("finalScore")
+        .textContent = finalDistance;
 
-    document.getElementById(
-        "finalScore"
-    ).textContent =
-        finalDistance;
+    document.getElementById("finalCoins")
+        .textContent = coins;
 
+    document.getElementById("finalBullets")
+        .textContent = bullets;
 
-    document.getElementById(
-        "finalCoins"
-    ).textContent =
-        coins;
-
-
-    document.getElementById(
-        "finalBullets"
-    ).textContent =
-        bullets;
-
-
-    document.getElementById(
-        "gameOver"
-    ).classList.remove(
-        "hidden"
-    );
-
+    document
+        .getElementById("gameOver")
+        .classList
+        .remove("hidden");
 }
 
-
-/* ==================================================
+/* ==============================
    HOME
-================================================== */
+============================== */
 
 function goHome(){
 
     running = false;
-
     gamePaused = false;
+    onlineNotificationOpen = false;
 
-    onlineNotificationOpen =
-        false;
-
-
-    cancelAnimationFrame(
-        animationFrame
-    );
-
+    cancelAnimationFrame(animationFrame);
 
     removeAllObjects();
 
+    onlineBackModal.classList.add("hidden");
 
-    onlineBackModal
+    pausedText.style.display = "none";
+
+    document
+        .getElementById("gameOver")
         .classList
         .add("hidden");
 
-
-    pausedText.style.display =
-        "none";
-
-
-    document.getElementById(
-        "gameOver"
-    ).classList.add(
-        "hidden"
-    );
-
-
-    document.getElementById(
-        "startScreen"
-    ).classList.remove(
-        "hidden"
-    );
-
+    document
+        .getElementById("startScreen")
+        .classList
+        .remove("hidden");
 }
 
-
-/* ==================================================
-   UPDATE CONNECTION DISPLAY
-================================================== */
+/* ==============================
+   CONNECTION
+============================== */
 
 function updateConnection(){
 
-    if(
-        navigator.onLine
-    ){
+    if(navigator.onLine){
 
         connection.textContent =
             "● ONLINE";
 
-
         connection.style.color =
             "#22c55e";
 
-    }
-
-    else{
+    }else{
 
         connection.textContent =
             "● OFFLINE READY";
 
-
         connection.style.color =
             "#06b6d4";
-
     }
-
 }
 
-
-/* ==================================================
-   INTERNET LOST
-================================================== */
+/* ==============================
+   OFFLINE
+============================== */
 
 function internetLost(){
 
     updateConnection();
 
-
     wasOffline = true;
-
 }
 
-
-/* ==================================================
-   INTERNET RESTORED
-================================================== */
+/* ==============================
+   ONLINE
+============================== */
 
 function internetRestored(){
 
     updateConnection();
-
-
-    /*
-       Only show the popup when:
-
-       1. Game is running
-       2. Game isn't already paused
-       3. Popup isn't already open
-       4. We were previously offline
-    */
 
     if(
         running &&
@@ -1966,105 +1447,55 @@ function internetRestored(){
 
         gamePaused = true;
 
+        onlineNotificationOpen = true;
 
-        onlineNotificationOpen =
-            true;
+        cancelAnimationFrame(animationFrame);
 
-
-        cancelAnimationFrame(
-            animationFrame
-        );
-
-
-        pausedText.style.display =
-            "block";
-
+        pausedText.style.display = "block";
 
         onlineBackModal
             .classList
             .remove("hidden");
-
     }
 
-
     wasOffline = false;
-
 }
-
-
-/* ==================================================
-   BROWSER ONLINE EVENT
-================================================== */
 
 window.addEventListener(
     "online",
-    () => {
-
-        internetRestored();
-
-    }
+    internetRestored
 );
-
-
-/* ==================================================
-   BROWSER OFFLINE EVENT
-================================================== */
 
 window.addEventListener(
     "offline",
-    () => {
+    internetLost
+);
 
-        internetLost();
+/* Faster network check */
 
+setInterval(() => {
+
+    const online =
+        navigator.onLine;
+
+    if(!online){
+
+        if(!wasOffline){
+            internetLost();
+        }
+
+    }else{
+
+        if(wasOffline){
+            internetRestored();
+        }
     }
-);
 
+},250);
 
-/* ==================================================
-   EXTRA NETWORK CHECK
-================================================== */
-
-setInterval(
-    () => {
-
-        const currentlyOnline =
-            navigator.onLine;
-
-
-        if(
-            !currentlyOnline
-        ){
-
-            if(
-                !wasOffline
-            ){
-
-                internetLost();
-
-            }
-
-        }
-
-        else{
-
-            if(
-                wasOffline
-            ){
-
-                internetRestored();
-
-            }
-
-        }
-
-    },
-    1000
-);
-
-
-/* ==================================================
+/* ==============================
    BACK TO WEB
-================================================== */
+============================== */
 
 function backToWeb(){
 
@@ -2072,263 +1503,183 @@ function backToWeb(){
 
     gamePaused = false;
 
-    onlineNotificationOpen =
-        false;
+    onlineNotificationOpen = false;
 
-
-    cancelAnimationFrame(
-        animationFrame
-    );
-
+    cancelAnimationFrame(animationFrame);
 
     removeAllObjects();
 
+    pausedText.style.display = "none";
 
-    pausedText.style.display =
-        "none";
-
-
-    onlineBackModal
-        .classList
-        .add("hidden");
-
-
-    /*
-       YOUR MAIN WEBSITE
-    */
+    onlineBackModal.classList.add("hidden");
 
     window.location.href =
         "index.html";
-
 }
 
-
-/* ==================================================
-   CONTINUE GAME
-================================================== */
+/* ==============================
+   CONTINUE
+============================== */
 
 function continueGame(){
 
-    onlineBackModal
-        .classList
-        .add("hidden");
+    onlineBackModal.classList.add("hidden");
 
+    onlineNotificationOpen = false;
 
-    onlineNotificationOpen =
-        false;
+    pausedText.style.display = "none";
 
-
-    pausedText.style.display =
-        "none";
-
-
-    if(
-        running
-    ){
+    if(running){
 
         gamePaused = false;
 
-
-        /*
-           This is important.
-
-           It prevents the time spent
-           in the popup from making
-           objects suddenly jump forward.
-        */
-
-        lastTime =
-            performance.now();
-
+        lastTime = performance.now();
 
         animationFrame =
-            requestAnimationFrame(
-                gameLoop
-            );
-
+            requestAnimationFrame(gameLoop);
     }
-
 }
 
-
-/* ==================================================
+/* ==============================
    KEYBOARD
-================================================== */
+============================== */
 
 document.addEventListener(
     "keydown",
-    (e) => {
+    e => {
 
-        if(
-            e.key === "ArrowLeft"
-        ){
-
+        if(e.key === "ArrowLeft"){
             moveLeft();
-
         }
 
-        else if(
-            e.key === "ArrowRight"
-        ){
-
+        else if(e.key === "ArrowRight"){
             moveRight();
-
         }
 
-        else if(
-            e.key === "ArrowUp"
-        ){
+        else if(e.key === "ArrowUp"){
 
             e.preventDefault();
 
             jump();
-
         }
 
-        else if(
-            e.key === "ArrowDown"
-        ){
-
+        else if(e.key === "ArrowDown"){
             slide();
-
         }
 
-        else if(
-            e.code === "Space"
-        ){
+        else if(e.code === "Space"){
 
             e.preventDefault();
 
             jump();
-
         }
-
     }
 );
 
-
-/* ==================================================
+/* ==============================
    SWIPE
-================================================== */
+============================== */
 
 let touchStartX = 0;
-
 let touchStartY = 0;
-
 
 document.addEventListener(
     "touchstart",
-    (e) => {
+    e => {
 
-        if(
-            !running ||
-            gamePaused
-        ){
-
+        if(!running || gamePaused){
             return;
-
         }
-
 
         const touch =
             e.changedTouches[0];
 
-
         touchStartX =
             touch.clientX;
-
 
         touchStartY =
             touch.clientY;
 
     },
-    {
-        passive:true
-    }
+    {passive:true}
 );
-
 
 document.addEventListener(
     "touchend",
-    (e) => {
+    e => {
 
-        if(
-            !running ||
-            gamePaused
-        ){
-
+        if(!running || gamePaused){
             return;
-
         }
-
 
         const touch =
             e.changedTouches[0];
 
-
         const dx =
-            touch.clientX -
-            touchStartX;
-
+            touch.clientX-touchStartX;
 
         const dy =
-            touch.clientY -
-            touchStartY;
+            touch.clientY-touchStartY;
 
+        if(Math.abs(dx)>Math.abs(dy)){
 
-        if(
-            Math.abs(dx) >
-            Math.abs(dy)
-        ){
-
-            if(
-                dx > 40
-            ){
-
+            if(dx>40){
                 moveRight();
-
             }
 
-            else if(
-                dx < -40
-            ){
-
+            else if(dx<-40){
                 moveLeft();
-
             }
 
-        }
+        }else{
 
-        else{
-
-            if(
-                dy < -40
-            ){
-
+            if(dy<-40){
                 jump();
-
             }
 
-            else if(
-                dy > 40
-            ){
-
+            else if(dy>40){
                 slide();
-
             }
-
         }
 
     },
-    {
-        passive:true
-    }
+    {passive:true}
 );
 
+/* ==============================
+   SERVICE WORKER
+============================== */
 
-/* ==================================================
+if("serviceWorker" in navigator){
+
+    window.addEventListener(
+        "load",
+        () => {
+
+            navigator.serviceWorker
+                .register("./sw.js")
+                .then(() => {
+
+                    console.log(
+                        "Offline mode ready"
+                    );
+
+                })
+                .catch(error => {
+
+                    console.log(
+                        "Service Worker error:",
+                        error
+                    );
+
+                });
+        }
+    );
+}
+
+/* ==============================
    INITIALIZE
-================================================== */
+============================== */
 
 loadCareer();
 
