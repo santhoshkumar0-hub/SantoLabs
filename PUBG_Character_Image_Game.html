@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Offline 2-Track Runner - Dynamic Procedural Human Animation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js for 3D Graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;700;800&family=Inter:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050811;
+            color: #ffffff;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .font-game { font-family: 'Orbitron', sans-serif; }
+        .font-pubg { font-family: 'Rajdhani', sans-serif; }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .glow-green { box-shadow: 0 0 25px rgba(16, 185, 129, 0.5); }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .animate-pulse-ring { animation: pulse-ring 2s infinite ease-in-out; }
+
+        canvas {
+            touch-action: none;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Rank Badge Style Classes */
+        .rank-bronze { color: #cd7f32; border-color: #cd7f32; }
+        .rank-silver { color: #c0c0c0; border-color: #c0c0c0; }
+        .rank-gold { color: #ffd700; border-color: #ffd700; }
+        .rank-platinum { color: #38bdf8; border-color: #38bdf8; }
+        .rank-diamond { color: #a855f7; border-color: #a855f7; }
+        .rank-ace { color: #f43f5e; border-color: #f43f5e; }
+        .rank-conqueror { color: #fbbf24; border-color: #fbbf24; text-shadow: 0 0 12px rgba(251, 191, 36, 0.8); }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between relative bg-slate-950 overflow-hidden">
+
+    <header class="absolute top-0 left-0 right-0 z-30 p-2 sm:p-4 flex justify-between items-center glass-panel m-2 sm:m-3 rounded-2xl">
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <div id="status-indicator-dot" class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping"></div>
+            <div>
+                <span class="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-400 block font-semibold">Connection</span>
+                <span id="status-text" class="text-xs sm:text-sm font-bold text-emerald-400 font-game">ONLINE</span>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <!-- Rank & Total Stats Trigger -->
+            <button id="open-rank-btn" class="flex items-center space-x-2 px-2.5 py-1.5 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 rounded-xl transition-all">
+                <i id="nav-rank-icon" class="fas fa-shield-halved text-amber-400 text-xs sm:text-sm"></i>
+                <div class="text-left">
+                    <span class="text-[8px] sm:text-[9px] uppercase tracking-widest text-slate-400 block">Rank</span>
+                    <span id="nav-rank-title" class="text-[10px] sm:text-xs font-black font-game text-amber-300">BRONZE I</span>
+                </div>
+            </button>
+
+            <!-- Audio Toggle -->
+            <button id="toggle-audio-btn" class="p-2 sm:p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition-all">
+                <i id="audio-icon" class="fas fa-volume-up text-xs sm:text-base"></i>
+            </button>
+
+            <!-- Offline Simulation Toggle -->
+            <button id="force-offline-btn" class="px-2.5 py-1.5 sm:px-3 sm:py-2 text-[10px] sm:text-xs rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30 transition-all font-semibold">
+                Simulate Offline
+            </button>
+        </div>
+    </header>
+
+    <div id="online-screen" class="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center">
+        <div class="relative flex items-center justify-center mb-6">
+            <div class="w-28 h-28 rounded-full border-4 border-indigo-500/20 border-t-indigo-500 animate-spin"></div>
+            <i class="fas fa-globe text-4xl text-indigo-400 absolute"></i>
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight font-game bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+            Connecting to Main Server...
+        </h1>
+        <p class="mt-3 text-slate-400 max-w-md text-xs sm:text-sm">
+            Website is online. If your connection drops, the offline 2-track runner mini-game unlocks automatically!
+        </p>
+    </div>
+
+    <div id="offline-screen" class="hidden relative z-20 flex flex-col items-center justify-center h-full px-4 text-center">
+        <div class="p-6 rounded-full bg-rose-500/10 border border-rose-500/20 mb-6 animate-pulse-ring">
+            <i class="fas fa-wifi-slash text-5xl text-rose-500"></i>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-black font-game text-rose-400 mb-2">NO SIGNAL DETECTED</h2>
+        <p class="text-slate-400 max-w-sm mb-6 text-xs sm:text-sm">Play offline on 2 parallel tracks. Experience slow-to-fast speed scaling and human biomechanical running movement!</p>
+        
+        <button id="open-mode-select-btn" class="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-base sm:text-lg tracking-wider rounded-2xl glow-green transform transition duration-200 hover:scale-105 active:scale-95 font-game flex items-center space-x-3">
+            <i class="fas fa-gamepad text-2xl"></i>
+            <span>PLAY OFFLINE GAME</span>
+        </button>
+    </div>
+
+    <div id="rank-modal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel p-6 rounded-3xl max-w-md w-full border border-slate-700/50 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button id="close-rank-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mx-auto mb-3">
+                    <i id="career-rank-badge" class="fas fa-trophy text-3xl text-amber-400"></i>
+                </div>
+                <h3 id="career-rank-title" class="text-2xl font-black font-game text-amber-300">BRONZE I</h3>
+                <p id="career-rank-desc" class="text-xs text-slate-400 mt-1">Survive higher distances and collect items to level up!</p>
+            </div>
+
+            <!-- EXP Progress Bar -->
+            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 mb-5">
+                <div class="flex justify-between text-xs mb-2">
+                    <span class="text-slate-400 font-semibold">Rank Progress</span>
+                    <span id="rank-exp-ratio" class="font-game text-indigo-400 font-bold">0 / 200 EXP</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                    <div id="rank-exp-bar" class="bg-gradient-to-r from-indigo-500 to-amber-400 h-full w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+
+            <!-- Career Stats -->
+            <div class="grid grid-cols-2 gap-3 text-center mb-6">
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest block">Highest Distance</span>
+                    <span id="stat-high-score" class="font-game text-lg font-bold text-cyan-400">0m</span>
+                </div>
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest block">Total Runs</span>
+                    <span id="stat-total-games" class="font-game text-lg font-bold text-emerald-400">0</span>
+                </div>
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest block">Total Gold Coins</span>
+                    <span id="stat-total-coins" class="font-game text-lg font-bold text-yellow-400">0</span>
+                </div>
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest block">Total Bullets Ammo</span>
+                    <span id="stat-total-bullets" class="font-game text-lg font-bold text-amber-500">0</span>
+                </div>
+            </div>
+
+            <button id="reset-stats-btn" class="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-semibold rounded-xl border border-rose-500/20 transition-all">
+                Reset Career Data
+            </button>
+        </div>
+    </div>
+
+    <div id="mode-modal" class="hidden fixed inset-0 z-40 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-md w-full text-center border border-slate-700/50 shadow-2xl relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="text-2xl font-black font-game mb-1 text-slate-100">SELECT GAME MODE</h3>
+            <p class="text-xs text-slate-400 mb-6">Subway Endless Runner • 2 Parallel Tracks</p>
+
+            <div class="space-y-4">
+                <!-- Normal 5.0 -->
+                <button id="start-normal-btn" class="w-full p-4 rounded-2xl bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-500/40 hover:border-indigo-400 text-left flex items-center space-x-4 hover:bg-slate-800/80 transition-all group">
+                    <div class="p-3 bg-indigo-500/20 rounded-xl text-indigo-400 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-coins text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-lg font-game text-indigo-300">NORMAL 5.0</span>
+                            <span class="text-[10px] bg-indigo-500/30 text-indigo-200 px-2 py-0.5 rounded-full uppercase">Standard</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-0.5">Coins pickup [audioc1] and Crash Sound [audioo1].</p>
+                    </div>
+                </button>
+
+                <!-- PUBG 5.0 -->
+                <button id="start-pubg-btn" class="w-full p-4 rounded-2xl bg-gradient-to-r from-amber-950/60 to-yellow-950/60 border border-amber-500/40 hover:border-amber-400 text-left flex items-center space-x-4 hover:bg-slate-800/80 transition-all group">
+                    <div class="p-3 bg-amber-500/20 rounded-xl text-amber-400 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-user-ninja text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-lg font-pubg text-amber-400 tracking-wider">PUBG 5.0</span>
+                            <span class="text-[10px] bg-amber-500/30 text-amber-200 px-2 py-0.5 rounded-full uppercase">Alok Character</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-0.5">Custom `alock1.png` Human Runner with bullets [audioc2] & knockout [audioo2].</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-container" class="hidden absolute inset-0 z-30 bg-slate-950 flex flex-col">
+        <!-- In-game HUD -->
+        <div class="absolute top-16 sm:top-20 left-3 right-3 sm:left-4 sm:right-4 z-10 flex justify-between items-center pointer-events-none">
+            <div class="glass-panel px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl flex items-center space-x-3 sm:space-x-4">
+                <div class="flex items-center space-x-1.5">
+                    <i class="fas fa-running text-cyan-400 text-xs sm:text-sm"></i>
+                    <span id="score-val" class="font-game text-sm sm:text-lg font-bold text-white">0m</span>
+                </div>
+                <div class="h-4 w-px bg-slate-700"></div>
+                <div class="flex items-center space-x-1.5">
+                    <i id="collectible-icon" class="fas fa-coins text-yellow-400 text-xs sm:text-sm"></i>
+                    <span id="coins-val" class="font-game text-sm sm:text-lg font-bold text-amber-400">0</span>
+                </div>
+            </div>
+
+            <div class="glass-panel px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl flex items-center space-x-2 border border-slate-700/60">
+                <i class="fas fa-tachometer-alt text-amber-400 text-xs"></i>
+                <div class="text-right">
+                    <span id="difficulty-badge" class="text-[9px] font-black uppercase tracking-wider block text-emerald-400 font-game">EASY</span>
+                    <span id="speed-multiplier" class="text-xs font-bold text-slate-200 font-game">1.0x SPEED</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="canvas-holder" class="w-full h-full"></div>
+
+        <div id="mobile-controls-bar" class="absolute bottom-4 left-0 right-0 z-20 px-4 flex justify-between items-center sm:hidden pointer-events-auto">
+            <div class="flex space-x-2">
+                <button id="btn-left" class="w-14 h-14 bg-slate-900/80 border border-slate-700 rounded-2xl flex items-center justify-center text-white text-xl active:bg-indigo-600 transition-all">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button id="btn-right" class="w-14 h-14 bg-slate-900/80 border border-slate-700 rounded-2xl flex items-center justify-center text-white text-xl active:bg-indigo-600 transition-all">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            <div class="flex space-x-2">
+                <button id="btn-slide" class="w-14 h-14 bg-slate-900/80 border border-slate-700 rounded-2xl flex items-center justify-center text-amber-400 text-xl active:bg-amber-600 active:text-white transition-all">
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+                <button id="btn-jump" class="w-14 h-14 bg-slate-900/80 border border-slate-700 rounded-2xl flex items-center justify-center text-cyan-400 text-xl active:bg-cyan-600 active:text-white transition-all">
+                    <i class="fas fa-arrow-up"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="game-over-modal" class="hidden absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-lg flex items-center justify-center p-4">
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-sm w-full text-center border border-rose-500/30">
+                <div class="w-14 h-14 bg-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl font-black">
+                    <i id="gameover-icon" class="fas fa-skull"></i>
+                </div>
+                <h2 id="gameover-title" class="text-3xl font-black font-game text-rose-500 mb-1">CRASHED!</h2>
+                <p id="gameover-audio-label" class="text-[11px] text-slate-400 mb-4">Game Over Audio Triggered</p>
+
+                <div class="bg-slate-900/80 p-4 rounded-2xl mb-5 space-y-2 border border-slate-800 text-left">
+                    <div class="flex justify-between text-xs sm:text-sm">
+                        <span class="text-slate-400">Distance Survived:</span>
+                        <span id="final-score" class="font-game font-bold text-white">0m</span>
+                    </div>
+                    <div class="flex justify-between text-xs sm:text-sm">
+                        <span id="label-collected-items" class="text-slate-400">Items Collected:</span>
+                        <span id="final-coins" class="font-game font-bold text-amber-400">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs sm:text-sm">
+                        <span class="text-slate-400">Max Speed Reached:</span>
+                        <span id="final-speed" class="font-game font-bold text-cyan-400">1.0x</span>
+                    </div>
+                    <div class="h-px bg-slate-800 my-1"></div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-400">Rank EXP Earned:</span>
+                        <span id="final-exp-gained" class="font-game font-bold text-indigo-400">+0 EXP</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2.5">
+                    <button id="restart-btn" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-xl font-game tracking-wider transition-transform active:scale-95 text-sm">
+                        RETRY AGAIN
+                    </button>
+                    <button id="exit-game-btn" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-all">
+                        EXIT TO MENU
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    class AudioFX {
+        constructor() {
+            this.ctx = null;
+            this.muted = false;
+        }
+
+        init() {
+            if (!this.ctx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioContext();
+            }
+        }
+
+        playCoinSound() { // audioc1
+            if (this.muted) return;
+            this.init();
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(987.77, now);
+            osc.frequency.exponentialRampToValueAtTime(1318.51, now + 0.12);
+
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+        }
+
+        playGameOverSound() { // audioo1
+            if (this.muted) return;
+            this.init();
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(350, now);
+            osc.frequency.exponentialRampToValueAtTime(30, now + 0.65);
+
+            gain.gain.setValueAtTime(0.4, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.65);
+        }
+
+        playBulletSound() { // audioc2
+            if (this.muted) return;
+            this.init();
+            const now = this.ctx.currentTime;
+            
+            const osc1 = this.ctx.createOscillator();
+            const gain1 = this.ctx.createGain();
+            osc1.type = 'triangle';
+            osc1.frequency.setValueAtTime(1900, now);
+            osc1.frequency.exponentialRampToValueAtTime(650, now + 0.08);
+
+            gain1.gain.setValueAtTime(0.35, now);
+            gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+            osc1.connect(gain1);
+            gain1.connect(this.ctx.destination);
+
+            const osc2 = this.ctx.createOscillator();
+            const gain2 = this.ctx.createGain();
+            osc2.type = 'square';
+            osc2.frequency.setValueAtTime(380, now + 0.02);
+            osc2.frequency.exponentialRampToValueAtTime(160, now + 0.09);
+
+            gain2.gain.setValueAtTime(0.25, now + 0.02);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+            osc2.connect(gain2);
+            gain2.connect(this.ctx.destination);
+
+            osc1.start(now);
+            osc1.stop(now + 0.08);
+            osc2.start(now + 0.02);
+            osc2.stop(now + 0.09);
+        }
+
+        playPubgGameOverSound() { // audioo2
+            if (this.muted) return;
+            this.init();
+            const now = this.ctx.currentTime;
+
+            const sub = this.ctx.createOscillator();
+            const subGain = this.ctx.createGain();
+            sub.type = 'sine';
+            sub.frequency.setValueAtTime(200, now);
+            sub.frequency.exponentialRampToValueAtTime(15, now + 0.75);
+
+            subGain.gain.setValueAtTime(0.7, now);
+            subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.75);
+
+            sub.connect(subGain);
+            subGain.connect(this.ctx.destination);
+
+            const bufferSize = this.ctx.sampleRate * 0.3;
+            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+
+            const noise = this.ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const noiseFilter = this.ctx.createBiquadFilter();
+            noiseFilter.type = 'lowpass';
+            noiseFilter.frequency.setValueAtTime(1000, now);
+            noiseFilter.frequency.exponentialRampToValueAtTime(60, now + 0.3);
+
+            const noiseGain = this.ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.6, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(this.ctx.destination);
+
+            sub.start(now);
+            sub.stop(now + 0.75);
+            noise.start(now);
+        }
+    }
+
+    const audioFX = new AudioFX();
+
+    const STORAGE_KEY = 'offline_runner_career_data';
+
+    const RANKS = [
+        { name: "BRONZE I", minExp: 0, icon: "fa-shield", colorClass: "rank-bronze" },
+        { name: "SILVER V", minExp: 150, icon: "fa-shield-halved", colorClass: "rank-silver" },
+        { name: "GOLD III", minExp: 400, icon: "fa-award", colorClass: "rank-gold" },
+        { name: "PLATINUM II", minExp: 800, icon: "fa-medal", colorClass: "rank-platinum" },
+        { name: "DIAMOND I", minExp: 1500, icon: "fa-gem", colorClass: "rank-diamond" },
+        { name: "CROWN ACE", minExp: 3000, icon: "fa-crown", colorClass: "rank-ace" },
+        { name: "CONQUEROR", minExp: 5000, icon: "fa-trophy", colorClass: "rank-conqueror" }
+    ];
+
+    let careerData = {
+        highScore: 0,
+        totalGames: 0,
+        totalCoins: 0,
+        totalBullets: 0,
+        exp: 0
+    };
+
+    function loadCareerData() {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                careerData = { ...careerData, ...JSON.parse(saved) };
+            }
+        } catch (e) {
+            console.warn("LocalStorage unavailable", e);
+        }
+        updateRankUI();
+    }
+
+    function saveCareerData() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(careerData));
+        } catch (e) {
+            console.warn("Failed saving career data", e);
+        }
+        updateRankUI();
+    }
+
+    function getRankInfo(exp) {
+        let currentRank = RANKS[0];
+        let nextRank = RANKS[1];
+
+        for (let i = 0; i < RANKS.length; i++) {
+            if (exp >= RANKS[i].minExp) {
+                currentRank = RANKS[i];
+                nextRank = RANKS[i + 1] || null;
+            }
+        }
+        return { currentRank, nextRank };
+    }
+
+    function updateRankUI() {
+        const { currentRank, nextRank } = getRankInfo(careerData.exp);
+
+        document.getElementById('nav-rank-title').innerText = currentRank.name;
+        document.getElementById('nav-rank-icon').className = `fas ${currentRank.icon} ${currentRank.colorClass} text-xs sm:text-sm`;
+
+        document.getElementById('career-rank-title').innerText = currentRank.name;
+        document.getElementById('career-rank-title').className = `text-2xl font-black font-game ${currentRank.colorClass}`;
+        document.getElementById('career-rank-badge').className = `fas ${currentRank.icon} text-3xl ${currentRank.colorClass}`;
+        
+        document.getElementById('stat-high-score').innerText = `${careerData.highScore}m`;
+        document.getElementById('stat-total-games').innerText = careerData.totalGames;
+        document.getElementById('stat-total-coins').innerText = careerData.totalCoins;
+        document.getElementById('stat-total-bullets').innerText = careerData.totalBullets;
+
+        const expBar = document.getElementById('rank-exp-bar');
+        const expRatioText = document.getElementById('rank-exp-ratio');
+
+        if (nextRank) {
+            const range = nextRank.minExp - currentRank.minExp;
+            const progress = careerData.exp - currentRank.minExp;
+            const pct = Math.min(100, Math.max(0, (progress / range) * 100));
+            expBar.style.width = `${pct}%`;
+            expRatioText.innerText = `${careerData.exp} / ${nextRank.minExp} EXP`;
+        } else {
+            expBar.style.width = '100%';
+            expRatioText.innerText = `${careerData.exp} EXP (MAX RANK)`;
+        }
+    }
+
+    function recordGameRun(runScore, itemsCollected, isPubg) {
+        careerData.totalGames += 1;
+        if (runScore > careerData.highScore) {
+            careerData.highScore = runScore;
+        }
+
+        if (isPubg) {
+            careerData.totalBullets += itemsCollected;
+        } else {
+            careerData.totalCoins += itemsCollected;
+        }
+
+        const expGained = Math.floor(runScore / 2) + (itemsCollected * 4);
+        careerData.exp += expGained;
+
+        saveCareerData();
+        return expGained;
+    }
+
+    document.getElementById('reset-stats-btn').addEventListener('click', () => {
+        careerData = { highScore: 0, totalGames: 0, totalCoins: 0, totalBullets: 0, exp: 0 };
+        saveCareerData();
+    });
+
+    const rankModal = document.getElementById('rank-modal');
+    document.getElementById('open-rank-btn').addEventListener('click', () => rankModal.classList.remove('hidden'));
+    document.getElementById('close-rank-modal-btn').addEventListener('click', () => rankModal.classList.add('hidden'));
+
+    const statusText = document.getElementById('status-text');
+    const statusDot = document.getElementById('status-indicator-dot');
+    const onlineScreen = document.getElementById('online-screen');
+    const offlineScreen = document.getElementById('offline-screen');
+    const forceOfflineBtn = document.getElementById('force-offline-btn');
+    let simulatedOffline = false;
+
+    function updateNetworkStatus() {
+        const isOnline = navigator.onLine && !simulatedOffline;
+
+        if (isOnline) {
+            statusText.innerText = "ONLINE";
+            statusText.className = "text-xs sm:text-sm font-bold text-emerald-400 font-game";
+            statusDot.className = "w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping";
+            
+            if (gameContainer.classList.contains('hidden')) {
+                onlineScreen.classList.remove('hidden');
+                offlineScreen.classList.add('hidden');
+            }
+        } else {
+            statusText.innerText = "OFFLINE / NO SIGNAL";
+            statusText.className = "text-xs sm:text-sm font-bold text-rose-400 font-game";
+            statusDot.className = "w-3.5 h-3.5 rounded-full bg-rose-500";
+            
+            if (gameContainer.classList.contains('hidden')) {
+                onlineScreen.classList.add('hidden');
+                offlineScreen.classList.remove('hidden');
+            }
+        }
+    }
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+
+    forceOfflineBtn.addEventListener('click', () => {
+        simulatedOffline = !simulatedOffline;
+        forceOfflineBtn.innerText = simulatedOffline ? "Restore Online" : "Simulate Offline";
+        updateNetworkStatus();
+    });
+
+    const toggleAudioBtn = document.getElementById('toggle-audio-btn');
+    const audioIcon = document.getElementById('audio-icon');
+    toggleAudioBtn.addEventListener('click', () => {
+        audioFX.muted = !audioFX.muted;
+        audioIcon.className = audioFX.muted ? "fas fa-volume-mute text-xs sm:text-base text-rose-400" : "fas fa-volume-up text-xs sm:text-base text-emerald-400";
+    });
+
+    const modeModal = document.getElementById('mode-modal');
+    document.getElementById('open-mode-select-btn').addEventListener('click', () => modeModal.classList.remove('hidden'));
+    document.getElementById('close-modal-btn').addEventListener('click', () => modeModal.classList.add('hidden'));
+
+    const gameContainer = document.getElementById('game-container');
+    const canvasHolder = document.getElementById('canvas-holder');
+    const scoreVal = document.getElementById('score-val');
+    const coinsVal = document.getElementById('coins-val');
+    const gameOverModal = document.getElementById('game-over-modal');
+
+    let scene, camera, renderer;
+    let playerGroup;
+    
+    // Skeletal Joints Object for Human Biomechanical Running Animation
+    let playerBones = {
+        torso: null,
+        head: null,
+        glasses: null,
+        leftUpperArm: null,
+        leftLowerArm: null,
+        rightUpperArm: null,
+        rightLowerArm: null,
+        leftThigh: null,
+        leftShin: null,
+        rightThigh: null,
+        rightShin: null
+    };
+
+    let activeTheme = 'NORMAL'; 
+    let isRunning = false;
+    let scoreDistance = 0;
+    let coinsCollected = 0;
+
+    let currentSpeed = 0.22;
+    const BASE_SPEED = 0.22;
+    const MAX_SPEED = 0.65;
+
+    let trapSpawnTimer = 0;
+    let currentTrapCooldown = 28;
+    const INITIAL_TRAP_GAP = 28;
+    const MIN_TRAP_GAP = 12;
+
+    const LANE_X = [-1.8, 1.8];
+    let currentLane = 0; 
+    let targetX = LANE_X[currentLane];
+
+    let velocityY = 0;
+    const gravity = -0.016;
+    let isJumping = false;
+    let isSliding = false;
+    let slideTimer = 0;
+    let runAnimCycle = 0; // Procedural Stride Cycle Phase Angle
+
+    let obstacles = [];
+    let collectibles = [];
+    let trackSegments = [];
+
+    // Optional texture loader for alock1.png image
+    const textureLoader = new THREE.TextureLoader();
+    let alokTexture = null;
+    alokTexture = textureLoader.load('alock1.png', undefined, undefined, () => {
+        console.log("alock1.png not found, defaulting to procedural high-res shader materials.");
+    });
+
+    function init3D() {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(activeTheme === 'PUBG' ? 0x140f09 : 0x070b14);
+        scene.fog = new THREE.FogExp2(scene.background, 0.022);
+
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 3.4, 6);
+        camera.lookAt(0, 1.2, -5);
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        
+        canvasHolder.innerHTML = '';
+        canvasHolder.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        dirLight.position.set(8, 20, 10);
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+
+        buildPlayerHumanoid();
+        buildTracks();
+    }
+
+    function buildPlayerHumanoid() {
+        playerGroup = new THREE.Group();
+        playerBones = {};
+
+        if (activeTheme === 'PUBG') {
+            // ALOK PUBG HUMAN BIOMECHANICAL CHARACTER MODEL
+            const jacketMat = new THREE.MeshStandardMaterial({ 
+                color: 0x18181b, 
+                map: alokTexture || null,
+                roughness: 0.3 
+            });
+            const skinMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.6 });
+            const pantsMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4 });
+            const neonMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x0891b2 });
+            const bootMat = new THREE.MeshStandardMaterial({ color: 0x020617 });
+
+            // Torso (Root)
+            const torsoGeo = new THREE.BoxGeometry(0.55, 0.65, 0.3);
+            const torso = new THREE.Mesh(torsoGeo, jacketMat);
+            torso.position.y = 1.05;
+            playerGroup.add(torso);
+            playerBones.torso = torso;
+
+            // Collar / Neon trim lines on jacket
+            const trimGeo = new THREE.BoxGeometry(0.57, 0.08, 0.32);
+            const trim = new THREE.Mesh(trimGeo, neonMat);
+            trim.position.y = 0.25;
+            torso.add(trim);
+
+            // Head
+            const headGroup = new THREE.Group();
+            headGroup.position.set(0, 0.42, 0);
+            torso.add(headGroup);
+            playerBones.head = headGroup;
+
+            const headMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.34, 0.32), skinMat);
+            headGroup.add(headMesh);
+
+            // Alok Stylish Hair
+            const hairMesh = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.12, 0.34), new THREE.MeshStandardMaterial({ color: 0x111827 }));
+            hairMesh.position.set(0, 0.18, 0);
+            headGroup.add(hairMesh);
+
+            // Signature Alok Neon Glasses
+            const glassesGroup = new THREE.Group();
+            const gFrame = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.08, 0.1), new THREE.MeshStandardMaterial({ color: 0x111827 }));
+            const gLens = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.06, 0.11), neonMat);
+            glassesGroup.add(gFrame);
+            glassesGroup.add(gLens);
+            glassesGroup.position.set(0, 0.04, -0.16);
+            headGroup.add(glassesGroup);
+
+            // Helper function to create upper/lower articulated limbs
+            const createArm = (isLeft) => {
+                const upperArm = new THREE.Group();
+                upperArm.position.set(isLeft ? -0.34 : 0.34, 0.26, 0);
+
+                const uMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.07, 0.36), jacketMat);
+                uMesh.position.y = -0.18;
+                upperArm.add(uMesh);
+
+                const lowerArm = new THREE.Group();
+                lowerArm.position.set(0, -0.36, 0);
+                upperArm.add(lowerArm);
+
+                const lMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.34), skinMat);
+                lMesh.position.y = -0.17;
+                lowerArm.add(lMesh);
+
+                const hand = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.1, 0.09), new THREE.MeshStandardMaterial({ color: 0x1f2937 }));
+                hand.position.y = -0.36;
+                lowerArm.add(hand);
+
+                return { upperArm, lowerArm };
+            };
+
+            const leftArm = createArm(true);
+            const rightArm = createArm(false);
+            torso.add(leftArm.upperArm);
+            torso.add(rightArm.upperArm);
+
+            playerBones.leftUpperArm = leftArm.upperArm;
+            playerBones.leftLowerArm = leftArm.lowerArm;
+            playerBones.rightUpperArm = rightArm.upperArm;
+            playerBones.rightLowerArm = rightArm.lowerArm;
+
+            // Leg Joints (Thighs + Shins + Feet)
+            const createLeg = (isLeft) => {
+                const thigh = new THREE.Group();
+                thigh.position.set(isLeft ? -0.16 : 0.16, -0.32, 0);
+
+                const tMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.09, 0.42), pantsMat);
+                tMesh.position.y = -0.21;
+                thigh.add(tMesh);
+
+                const shin = new THREE.Group();
+                shin.position.set(0, -0.42, 0);
+                thigh.add(shin);
+
+                const sMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.07, 0.40), pantsMat);
+                sMesh.position.y = -0.20;
+                shin.add(sMesh);
+
+                const boot = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.28), bootMat);
+                boot.position.set(0, -0.42, -0.05);
+                shin.add(boot);
+
+                return { thigh, shin };
+            };
+
+            const leftLeg = createLeg(true);
+            const rightLeg = createLeg(false);
+            torso.add(leftLeg.thigh);
+            torso.add(rightLeg.thigh);
+
+            playerBones.leftThigh = leftLeg.thigh;
+            playerBones.leftShin = leftLeg.shin;
+            playerBones.rightThigh = rightLeg.thigh;
+            playerBones.rightShin = rightLeg.shin;
+
+        } else {
+            // Normal 5.0 Arcade Cyber Humanoid
+            const cyberMat = new THREE.MeshStandardMaterial({ color: 0x6366f1, roughness: 0.3 });
+            const visorMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x0284c7 });
+
+            const torsoGeo = new THREE.BoxGeometry(0.5, 0.6, 0.28);
+            const torso = new THREE.Mesh(torsoGeo, cyberMat);
+            torso.position.y = 1.0;
+            playerGroup.add(torso);
+            playerBones.torso = torso;
+
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 12), cyberMat);
+            head.position.set(0, 0.42, 0);
+            torso.add(head);
+
+            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.15), visorMat);
+            visor.position.set(0, 0.02, -0.12);
+            head.add(visor);
+
+            const createSimpleLimb = (posX, isArm) => {
+                const upper = new THREE.Group();
+                upper.position.set(posX, isArm ? 0.2 : -0.3, 0);
+                const mesh = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.07, 0.06, isArm ? 0.6 : 0.7), 
+                    cyberMat
+                );
+                mesh.position.y = isArm ? -0.3 : -0.35;
+                upper.add(mesh);
+                return upper;
+            };
+
+            playerBones.leftUpperArm = createSimpleLimb(-0.32, true);
+            playerBones.rightUpperArm = createSimpleLimb(0.32, true);
+            playerBones.leftThigh = createSimpleLimb(-0.15, false);
+            playerBones.rightThigh = createSimpleLimb(0.15, false);
+
+            torso.add(playerBones.leftUpperArm);
+            torso.add(playerBones.rightUpperArm);
+            torso.add(playerBones.leftThigh);
+            torso.add(playerBones.rightThigh);
+        }
+
+        playerGroup.position.set(LANE_X[currentLane], 0, 0);
+        scene.add(playerGroup);
+    }
+
+    function buildTracks() {
+        for (let i = 0; i < 10; i++) {
+            spawnTrackSegment(-i * 12);
+        }
+    }
+
+    function spawnTrackSegment(zPos) {
+        const segment = new THREE.Group();
+
+        const roadGeo = new THREE.PlaneGeometry(6, 12);
+        const roadMat = new THREE.MeshStandardMaterial({ 
+            color: activeTheme === 'PUBG' ? 0x261d15 : 0x0f172a,
+            roughness: 0.8 
+        });
+        const road = new THREE.Mesh(roadGeo, roadMat);
+        road.rotation.x = -Math.PI / 2;
+        road.position.z = -6;
+        segment.add(road);
+
+        const divGeo = new THREE.BoxGeometry(0.25, 0.08, 12);
+        const divMat = new THREE.MeshStandardMaterial({ 
+            color: activeTheme === 'PUBG' ? 0xf59e0b : 0x06b6d4,
+            emissive: activeTheme === 'PUBG' ? 0x451a03 : 0x003344
+        });
+        const divider = new THREE.Mesh(divGeo, divMat);
+        divider.position.set(0, 0.04, -6);
+        segment.add(divider);
+
+        for (let side of [-3.1, 3.1]) {
+            const railGeo = new THREE.BoxGeometry(0.2, 0.6, 12);
+            const railMat = new THREE.MeshStandardMaterial({ color: 0x334155 });
+            const rail = new THREE.Mesh(railGeo, railMat);
+            rail.position.set(side, 0.3, -6);
+            segment.add(rail);
+        }
+
+        segment.position.z = zPos;
+        scene.add(segment);
+        trackSegments.push(segment);
+    }
+
+    function spawnObstacleOrCollectible() {
+        const laneIndex = Math.random() < 0.5 ? 0 : 1;
+        const laneX = LANE_X[laneIndex];
+        const spawnZ = -60;
+
+        const isObstacle = Math.random() < 0.65;
+
+        if (isObstacle) {
+            const obstacleGroup = new THREE.Group();
+            const isHigh = Math.random() < 0.45;
+
+            if (activeTheme === 'PUBG') {
+                if (isHigh) {
+                    const crateGeo = new THREE.BoxGeometry(1.6, 1.1, 1.1);
+                    const crateMat = new THREE.MeshStandardMaterial({ color: 0xd97706 });
+                    const crate = new THREE.Mesh(crateGeo, crateMat);
+                    crate.position.set(0, 1.7, 0);
+                    obstacleGroup.add(crate);
+                    obstacleGroup.userData = { type: 'high' };
+                } else {
+                    const barGeo = new THREE.BoxGeometry(1.6, 0.7, 0.8);
+                    const barMat = new THREE.MeshStandardMaterial({ color: 0x78350f });
+                    const bar = new THREE.Mesh(barGeo, barMat);
+                    bar.position.set(0, 0.35, 0);
+                    obstacleGroup.add(bar);
+                    obstacleGroup.userData = { type: 'low' };
+                }
+            } else {
+                if (isHigh) {
+                    const laserGeo = new THREE.BoxGeometry(1.6, 0.2, 0.2);
+                    const laserMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xff0000 });
+                    const laser = new THREE.Mesh(laserGeo, laserMat);
+                    laser.position.set(0, 1.6, 0);
+                    obstacleGroup.add(laser);
+
+                    const sup1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.6, 0.1), laserMat);
+                    sup1.position.set(-0.7, 0.8, 0);
+                    const sup2 = sup1.clone();
+                    sup2.position.x = 0.7;
+                    obstacleGroup.add(sup1);
+                    obstacleGroup.add(sup2);
+
+                    obstacleGroup.userData = { type: 'high' };
+                } else {
+                    const barGeo = new THREE.BoxGeometry(1.6, 0.65, 0.5);
+                    const barMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
+                    const bar = new THREE.Mesh(barGeo, barMat);
+                    bar.position.set(0, 0.32, 0);
+                    obstacleGroup.add(bar);
+                    obstacleGroup.userData = { type: 'low' };
+                }
+            }
+
+            obstacleGroup.position.set(laneX, 0, spawnZ);
+            scene.add(obstacleGroup);
+            obstacles.push(obstacleGroup);
+        } else {
+            const collectibleGroup = new THREE.Group();
+
+            if (activeTheme === 'PUBG') {
+                for (let b = -0.15; b <= 0.15; b += 0.15) {
+                    const bulletGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.45, 12);
+                    const bulletMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.9, roughness: 0.2 });
+                    const bullet = new THREE.Mesh(bulletGeo, bulletMat);
+                    
+                    const tipGeo = new THREE.ConeGeometry(0.08, 0.18, 12);
+                    const tipMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.9 });
+                    const tip = new THREE.Mesh(tipGeo, tipMat);
+                    tip.position.y = 0.3;
+                    bullet.add(tip);
+
+                    bullet.position.set(b, 0.6, 0);
+                    collectibleGroup.add(bullet);
+                }
+            } else {
+                const coinGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.08, 16);
+                const coinMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.9, roughness: 0.1 });
+                const coin = new THREE.Mesh(coinGeo, coinMat);
+                coin.rotation.x = Math.PI / 2;
+                coin.position.y = 0.6;
+                collectibleGroup.add(coin);
+            }
+
+            collectibleGroup.position.set(laneX, 0, spawnZ);
+            scene.add(collectibleGroup);
+            collectibles.push(collectibleGroup);
+        }
+    }
+
+    function animateHumanoidSkeleton() {
+        if (!playerBones.torso) return;
+
+        // Speed multiplier factor (1.0x to 3.0x)
+        const speedRatio = currentSpeed / BASE_SPEED;
+        
+        // 1. STRIDE FREQUENCY & RUN CYCLE ANGLE
+        // Running stride frequency accelerates as speed increases
+        const animStep = 0.18 * speedRatio;
+        runAnimCycle += animStep;
+
+        const cycle = runAnimCycle;
+        const sinCycle = Math.sin(cycle);
+        const cosCycle = Math.cos(cycle);
+
+        if (isJumping) {
+            // HIGH JUMP HUMAN POSE STATE: Tucked knees, arms raised
+            playerBones.torso.rotation.x = 0.1;
+            playerBones.torso.rotation.z = 0;
+            playerBones.torso.position.y = 1.0;
+
+            if (playerBones.leftThigh) playerBones.leftThigh.rotation.x = -1.1;
+            if (playerBones.rightThigh) playerBones.rightThigh.rotation.x = -0.8;
+            if (playerBones.leftShin) playerBones.leftShin.rotation.x = 1.4;
+            if (playerBones.rightShin) playerBones.rightShin.rotation.x = 1.2;
+
+            if (playerBones.leftUpperArm) playerBones.leftUpperArm.rotation.x = -0.8;
+            if (playerBones.rightUpperArm) playerBones.rightUpperArm.rotation.x = -0.8;
+
+        } else if (isSliding) {
+            // LOW CROUCH SLIDE HUMAN POSE STATE: Forward knee slide, body leaning back
+            playerBones.torso.rotation.x = -0.7;
+            playerBones.torso.position.y = 0.55;
+
+            if (playerBones.leftThigh) playerBones.leftThigh.rotation.x = 1.4;
+            if (playerBones.rightThigh) playerBones.rightThigh.rotation.x = 1.2;
+            if (playerBones.leftShin) playerBones.leftShin.rotation.x = -1.2;
+            if (playerBones.rightShin) playerBones.rightShin.rotation.x = -1.1;
+
+            if (playerBones.leftUpperArm) playerBones.leftUpperArm.rotation.x = 0.5;
+            if (playerBones.rightUpperArm) playerBones.rightUpperArm.rotation.x = 0.5;
+
+        } else {
+            // NATURAL HUMAN RUNNING BIOMECHANICS CYCLE
+            // Forward Leaning Angle: Leans forward more as speed increases
+            const forwardLean = 0.12 + (speedRatio * 0.06);
+            playerBones.torso.rotation.x = forwardLean;
+
+            // Lane Switch Bank Tilt Angle (Leans into turn)
+            const laneDiff = targetX - playerGroup.position.x;
+            playerBones.torso.rotation.z = -laneDiff * 0.18;
+
+            // Torso Vertical Foot-Impact Bobbing (Hits lowest point on foot strike)
+            const verticalBob = Math.abs(cosCycle) * 0.08 * Math.min(1.5, speedRatio);
+            playerBones.torso.position.y = 0.98 + verticalBob;
+
+            // Head Stabilization (Counter-balances torso bob)
+            if (playerBones.head) {
+                playerBones.head.rotation.x = -forwardLean * 0.8;
+            }
+
+            // Hip & Torso Counter-Torquing (Torso rotates opposite to lead leg)
+            playerBones.torso.rotation.y = sinCycle * 0.10;
+
+            // THIGHS & KNEES/SHINS RUNNING SWING
+            const legSwingAmplitude = 0.75 * Math.min(1.4, speedRatio);
+
+            if (playerBones.leftThigh) {
+                playerBones.leftThigh.rotation.x = sinCycle * legSwingAmplitude;
+                // Knee bends on backswing step
+                if (playerBones.leftShin) {
+                    playerBones.leftShin.rotation.x = (sinCycle > 0) ? sinCycle * 0.95 : 0.15;
+                }
+            }
+
+            if (playerBones.rightThigh) {
+                playerBones.rightThigh.rotation.x = -sinCycle * legSwingAmplitude;
+                // Knee bends on backswing step
+                if (playerBones.rightShin) {
+                    playerBones.rightShin.rotation.x = (-sinCycle > 0) ? -sinCycle * 0.95 : 0.15;
+                }
+            }
+
+            // ARMS & ELBOWS OPPOSITE COUNTER-SWING
+            const armSwingAmplitude = 0.65 * Math.min(1.4, speedRatio);
+
+            if (playerBones.leftUpperArm) {
+                playerBones.leftUpperArm.rotation.x = -sinCycle * armSwingAmplitude;
+                if (playerBones.leftLowerArm) {
+                    playerBones.leftLowerArm.rotation.x = -0.4 - Math.abs(sinCycle) * 0.3;
+                }
+            }
+
+            if (playerBones.rightUpperArm) {
+                playerBones.rightUpperArm.rotation.x = sinCycle * armSwingAmplitude;
+                if (playerBones.rightLowerArm) {
+                    playerBones.rightLowerArm.rotation.x = -0.4 - Math.abs(sinCycle) * 0.3;
+                }
+            }
+        }
+    }
+
+    function updateGame() {
+        if (!isRunning) return;
+
+        scoreDistance += currentSpeed * 0.5;
+        const currentMeters = Math.floor(scoreDistance);
+        scoreVal.innerText = `${currentMeters}m`;
+
+        currentSpeed = Math.min(MAX_SPEED, BASE_SPEED + (scoreDistance * 0.00035));
+        
+        const speedMult = (currentSpeed / BASE_SPEED).toFixed(1);
+        document.getElementById('speed-multiplier').innerText = `${speedMult}x SPEED`;
+
+        const diffBadge = document.getElementById('difficulty-badge');
+        if (currentSpeed < 0.32) {
+            diffBadge.innerText = "EASY";
+            diffBadge.className = "text-[9px] font-black uppercase tracking-wider block text-emerald-400 font-game";
+        } else if (currentSpeed < 0.48) {
+            diffBadge.innerText = "MEDIUM";
+            diffBadge.className = "text-[9px] font-black uppercase tracking-wider block text-amber-400 font-game";
+        } else {
+            diffBadge.innerText = "HARD";
+            diffBadge.className = "text-[9px] font-black uppercase tracking-wider block text-rose-500 font-game";
+        }
+
+        currentTrapCooldown = Math.max(MIN_TRAP_GAP, INITIAL_TRAP_GAP - (scoreDistance * 0.015));
+
+        trapSpawnTimer += currentSpeed;
+        if (trapSpawnTimer >= currentTrapCooldown) {
+            trapSpawnTimer = 0;
+            spawnObstacleOrCollectible();
+        }
+
+        playerGroup.position.x += (targetX - playerGroup.position.x) * 0.25;
+
+        if (isJumping) {
+            playerGroup.position.y += velocityY;
+            velocityY += gravity;
+
+            if (playerGroup.position.y <= 0) {
+                playerGroup.position.y = 0;
+                isJumping = false;
+                velocityY = 0;
+            }
+        }
+
+        if (isSliding) {
+            slideTimer--;
+            if (slideTimer <= 0) {
+                isSliding = false;
+            }
+        }
+
+        // Animate procedural human skeleton running cycle
+        animateHumanoidSkeleton();
+
+        for (let i = 0; i < trackSegments.length; i++) {
+            const seg = trackSegments[i];
+            seg.position.z += currentSpeed;
+
+            if (seg.position.z > 12) {
+                seg.position.z -= 120;
+            }
+        }
+
+        for (let i = collectibles.length - 1; i >= 0; i--) {
+            const item = collectibles[i];
+            item.position.z += currentSpeed;
+            item.rotation.y += 0.05;
+
+            const distZ = Math.abs(item.position.z - playerGroup.position.z);
+            const distX = Math.abs(item.position.x - playerGroup.position.x);
+
+            if (distZ < 0.85 && distX < 0.85) {
+                scene.remove(item);
+                collectibles.splice(i, 1);
+                coinsCollected += 1;
+                coinsVal.innerText = coinsCollected;
+
+                if (activeTheme === 'PUBG') {
+                    audioFX.playBulletSound();
+                } else {
+                    audioFX.playCoinSound();
+                }
+                continue;
+            }
+
+            if (item.position.z > 5) {
+                scene.remove(item);
+                collectibles.splice(i, 1);
+            }
+        }
+
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+            const obs = obstacles[i];
+            obs.position.z += currentSpeed;
+
+            const distZ = Math.abs(obs.position.z - playerGroup.position.z);
+            const distX = Math.abs(obs.position.x - playerGroup.position.x);
+
+            if (distZ < 0.7 && distX < 0.8) {
+                const type = obs.userData.type;
+
+                let collision = false;
+                if (type === 'low' && playerGroup.position.y < 0.85) {
+                    collision = true;
+                } else if (type === 'high' && !isSliding) {
+                    collision = true;
+                }
+
+                if (collision) {
+                    triggerGameOver();
+                    return;
+                }
+            }
+
+            if (obs.position.z > 5) {
+                scene.remove(obs);
+                obstacles.splice(i, 1);
+            }
+        }
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(updateGame);
+    }
+
+    function triggerGameOver() {
+        isRunning = false;
+
+        const finalRunMeters = Math.floor(scoreDistance);
+        const expGained = recordGameRun(finalRunMeters, coinsCollected, activeTheme === 'PUBG');
+
+        const gameOverTitle = document.getElementById('gameover-title');
+        const gameOverAudioLabel = document.getElementById('gameover-audio-label');
+        const gameOverIcon = document.getElementById('gameover-icon');
+
+        if (activeTheme === 'PUBG') {
+            audioFX.playPubgGameOverSound(); // audioo2
+            gameOverTitle.innerText = "KNOCKED OUT!";
+            gameOverTitle.className = "text-3xl font-black font-pubg text-amber-500 mb-1 tracking-wider";
+            gameOverAudioLabel.innerText = "Game Over Sound Triggered: audioo2";
+            gameOverIcon.className = "fas fa-skull-crossbones text-amber-500";
+        } else {
+            audioFX.playGameOverSound(); // audioo1
+            gameOverTitle.innerText = "CRASHED!";
+            gameOverTitle.className = "text-3xl font-black font-game text-rose-500 mb-1";
+            gameOverAudioLabel.innerText = "Game Over Sound Triggered: audioo1";
+            gameOverIcon.className = "fas fa-skull text-rose-500";
+        }
+
+        document.getElementById('final-score').innerText = `${finalRunMeters}m`;
+        document.getElementById('final-coins').innerText = coinsCollected;
+        document.getElementById('final-speed').innerText = `${(currentSpeed / BASE_SPEED).toFixed(1)}x`;
+        document.getElementById('final-exp-gained').innerText = `+${expGained} EXP`;
+
+        gameOverModal.classList.remove('hidden');
+    }
+
+    function jump() {
+        if (!isJumping && !isSliding) {
+            isJumping = true;
+            velocityY = 0.28;
+        }
+    }
+
+    function slide() {
+        if (!isSliding && !isJumping) {
+            isSliding = true;
+            slideTimer = 35;
+        }
+    }
+
+    function moveLeft() {
+        if (currentLane > 0) {
+            currentLane = 0;
+            targetX = LANE_X[currentLane];
+        }
+    }
+
+    function moveRight() {
+        if (currentLane < 1) {
+            currentLane = 1;
+            targetX = LANE_X[currentLane];
+        }
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (!isRunning) return;
+        if (e.key === 'ArrowLeft' || e.key === 'a') moveLeft();
+        if (e.key === 'ArrowRight' || e.key === 'd') moveRight();
+        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') jump();
+        if (e.key === 'ArrowDown' || e.key === 's') slide();
+    });
+
+    document.getElementById('btn-left').addEventListener('click', moveLeft);
+    document.getElementById('btn-right').addEventListener('click', moveRight);
+    document.getElementById('btn-jump').addEventListener('click', jump);
+    document.getElementById('btn-slide').addEventListener('click', slide);
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    window.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+        if (!isRunning) return;
+        const diffX = e.changedTouches[0].clientX - touchStartX;
+        const diffY = e.changedTouches[0].clientY - touchStartY;
+
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            if (diffX > 30) moveRight();
+            else if (diffX < -30) moveLeft();
+        } else {
+            if (diffY < -35) jump();
+            else if (diffY > 35) slide();
+        }
+    }, { passive: true });
+
+    function startGame(mode) {
+        activeTheme = mode;
+        currentLane = 0;
+        targetX = LANE_X[currentLane];
+        scoreDistance = 0;
+        coinsCollected = 0;
+        runAnimCycle = 0;
+        
+        currentSpeed = BASE_SPEED;
+        trapSpawnTimer = 0;
+        currentTrapCooldown = INITIAL_TRAP_GAP;
+
+        obstacles = [];
+        collectibles = [];
+        trackSegments = [];
+
+        scoreVal.innerText = '0m';
+        coinsVal.innerText = '0';
+
+        const collectibleIcon = document.getElementById('collectible-icon');
+        const labelCollectedItems = document.getElementById('label-collected-items');
+
+        if (mode === 'PUBG') {
+            collectibleIcon.className = 'fas fa-crosshairs text-amber-400 text-xs sm:text-sm';
+            labelCollectedItems.innerText = 'Bullets Collected:';
+        } else {
+            collectibleIcon.className = 'fas fa-coins text-yellow-400 text-xs sm:text-sm';
+            labelCollectedItems.innerText = 'Coins Collected:';
+        }
+
+        modeModal.classList.add('hidden');
+        gameOverModal.classList.add('hidden');
+        onlineScreen.classList.add('hidden');
+        offlineScreen.classList.add('hidden');
+        gameContainer.classList.remove('hidden');
+
+        init3D();
+        isRunning = true;
+        requestAnimationFrame(updateGame);
+    }
+
+    document.getElementById('start-normal-btn').addEventListener('click', () => startGame('NORMAL'));
+    document.getElementById('start-pubg-btn').addEventListener('click', () => startGame('PUBG'));
+    document.getElementById('restart-btn').addEventListener('click', () => startGame(activeTheme));
+    
+    document.getElementById('exit-game-btn').addEventListener('click', () => {
+        isRunning = false;
+        gameContainer.classList.add('hidden');
+        gameOverModal.classList.add('hidden');
+        updateNetworkStatus();
+    });
+
+    window.addEventListener('resize', () => {
+        if (renderer && camera) {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    });
+
+    window.onload = () => {
+        loadCareerData();
+        updateNetworkStatus();
+    };
+</script>
+</body>
+</html>

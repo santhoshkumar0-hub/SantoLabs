@@ -1,0 +1,5453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0"
+>
+
+<meta
+    name="theme-color"
+    content="#070711"
+>
+
+<title>SantoLabs | Create • Build • Innovate</title>
+
+<style>
+
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+
+    --bg:#070711;
+    --card:#111121;
+    --card2:#17172b;
+
+    --text:#ffffff;
+    --muted:#a5a5b8;
+
+    --purple:#8b5cf6;
+    --pink:#ec4899;
+    --blue:#3b82f6;
+    --cyan:#06b6d4;
+    --green:#22c55e;
+
+    --danger:#ef4444;
+
+    --border:rgba(255,255,255,.10);
+
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    background:
+
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(139,92,246,.16),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(236,72,153,.10),
+            transparent 25%
+        ),
+
+        var(--bg);
+
+    color:var(--text);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+}
+
+
+/* =====================================================
+   STARTUP BLUR
+===================================================== */
+
+#siteContent{
+
+    transition:
+        filter .35s ease,
+        opacity .35s ease;
+
+}
+
+body.startup-active #siteContent{
+
+    filter:blur(9px);
+
+    pointer-events:none;
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:5000;
+
+    background:
+        rgba(7,7,17,.82);
+
+    backdrop-filter:blur(20px);
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.nav{
+
+    max-width:1250px;
+
+    margin:auto;
+
+    min-height:72px;
+
+    padding:
+        12px 20px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+}
+
+.logo{
+
+    font-size:25px;
+
+    font-weight:900;
+
+    letter-spacing:-1px;
+}
+
+.logo span{
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--purple),
+            var(--pink),
+            var(--cyan)
+        );
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+}
+
+nav{
+
+    display:flex;
+
+    gap:20px;
+
+    align-items:center;
+}
+
+nav a{
+
+    color:#c7c7d5;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:.2s;
+}
+
+nav a:hover{
+
+    color:white;
+}
+
+
+/* =====================================================
+   OWNER BUTTON
+===================================================== */
+
+.owner-btn{
+
+    width:43px;
+
+    height:43px;
+
+    border-radius:50%;
+
+    border:
+        1px solid
+        rgba(139,92,246,.55);
+
+    background:
+        linear-gradient(
+            135deg,
+            #19152d,
+            #30152e
+        );
+
+    color:white;
+
+    font-size:25px;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 0 25px
+        rgba(139,92,246,.18);
+
+    transition:.2s;
+}
+
+.owner-btn:hover{
+
+    transform:
+        scale(1.07)
+        rotate(90deg);
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero{
+
+    min-height:650px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:
+        80px 20px;
+}
+
+.hero-inner{
+
+    max-width:900px;
+}
+
+.badge{
+
+    display:inline-flex;
+
+    padding:
+        8px 15px;
+
+    border-radius:50px;
+
+    border:
+        1px solid
+        rgba(139,92,246,.35);
+
+    background:
+        rgba(139,92,246,.08);
+
+    color:#c4b5fd;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    margin-bottom:25px;
+}
+
+.hero h1{
+
+    font-size:
+        clamp(
+            55px,
+            9vw,
+            105px
+        );
+
+    line-height:.95;
+
+    letter-spacing:-5px;
+}
+
+.gradient{
+
+    background:
+        linear-gradient(
+            90deg,
+            #8b5cf6,
+            #ec4899,
+            #06b6d4
+        );
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+}
+
+.hero p{
+
+    max-width:680px;
+
+    margin:
+        25px auto 0;
+
+    color:var(--muted);
+
+    font-size:17px;
+
+    line-height:1.8;
+}
+
+.hero-buttons{
+
+    margin-top:35px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+}
+
+.btn{
+
+    border:0;
+
+    border-radius:12px;
+
+    padding:
+        14px 22px;
+
+    color:white;
+
+    font-weight:bold;
+
+    text-decoration:none;
+
+    cursor:pointer;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    transition:.2s;
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+}
+
+.btn-primary{
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--pink)
+        );
+
+    box-shadow:
+        0 10px 35px
+        rgba(139,92,246,.22);
+}
+
+.btn-secondary{
+
+    background:
+        rgba(255,255,255,.05);
+
+    border:
+        1px solid var(--border);
+}
+
+
+/* =====================================================
+   SECTIONS
+===================================================== */
+
+section{
+
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:
+        75px 20px;
+}
+
+.section-head{
+
+    margin-bottom:30px;
+}
+
+.section-head h2{
+
+    font-size:35px;
+}
+
+.section-head p{
+
+    color:var(--muted);
+
+    margin-top:8px;
+}
+
+
+/* =====================================================
+   PROJECTS
+===================================================== */
+
+.project-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                280px,
+                1fr
+            )
+        );
+
+    gap:22px;
+}
+
+.project-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.045),
+            rgba(255,255,255,.015)
+        ),
+
+        var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:22px;
+
+    padding:24px;
+
+    transition:.25s;
+}
+
+.project-card:hover{
+
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(139,92,246,.45);
+
+    box-shadow:
+        0 20px 60px
+        rgba(0,0,0,.25);
+}
+
+.project-top{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+}
+
+.project-icon{
+
+    width:76px;
+
+    height:76px;
+
+    flex:none;
+
+    border-radius:18px;
+
+    object-fit:cover;
+
+    background:
+        linear-gradient(
+            135deg,
+            #17172b,
+            #292044
+        );
+
+    border:
+        1px solid var(--border);
+}
+
+.project-icon-placeholder{
+
+    width:76px;
+
+    height:76px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:32px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #19162e,
+            #27182e
+        );
+
+    border:
+        1px solid var(--border);
+}
+
+.project-name{
+
+    font-size:21px;
+
+    font-weight:800;
+}
+
+.project-description{
+
+    color:var(--muted);
+
+    line-height:1.65;
+
+    margin-top:18px;
+
+    font-size:14px;
+}
+
+.project-buttons{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:20px;
+}
+
+.project-button{
+
+    border:
+        1px solid var(--border);
+
+    background:#181827;
+
+    color:white;
+
+    padding:
+        9px 12px;
+
+    border-radius:9px;
+
+    font-size:12px;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    transition:.2s;
+}
+
+.project-button:hover{
+
+    background:#292940;
+
+}
+
+.delete-button{
+
+    background:
+        rgba(239,68,68,.10);
+
+    border-color:
+        rgba(239,68,68,.35);
+
+    color:#ff8b9b;
+}
+
+.delete-button:hover{
+
+    background:
+        rgba(239,68,68,.22);
+
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.content-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                260px,
+                1fr
+            )
+        );
+
+    gap:18px;
+}
+
+.content-card{
+
+    background:
+        var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    transition:.2s;
+}
+
+.content-card:hover{
+
+    border-color:
+        rgba(139,92,246,.35);
+
+    transform:
+        translateY(-3px);
+}
+
+.content-card img{
+
+    width:100%;
+
+    max-height:280px;
+
+    object-fit:cover;
+
+    display:block;
+}
+
+.content-card video{
+
+    width:100%;
+
+    display:block;
+
+    max-height:300px;
+
+    background:#000;
+}
+
+.content-body{
+
+    padding:18px;
+}
+
+.content-body h3{
+
+    margin-bottom:8px;
+}
+
+.content-body p{
+
+    color:var(--muted);
+
+    line-height:1.6;
+
+    white-space:pre-wrap;
+}
+
+.content-link{
+
+    display:inline-block;
+
+    margin-top:14px;
+
+    color:#b9a7ff;
+
+    text-decoration:none;
+
+    font-weight:bold;
+}
+
+.content-link:hover{
+
+    color:white;
+}
+
+
+/* =====================================================
+   ABOUT
+===================================================== */
+
+.about-box{
+
+    background:var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:22px;
+
+    padding:30px;
+}
+
+.about-box p{
+
+    color:var(--muted);
+
+    line-height:1.8;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+
+    border-top:
+        1px solid var(--border);
+
+    text-align:center;
+
+    padding:
+        45px 20px;
+
+    color:#77778b;
+}
+
+.footer-logo{
+
+    color:white;
+
+    font-size:22px;
+
+    font-weight:900;
+
+    margin-bottom:10px;
+}
+
+
+/* =====================================================
+   MODALS
+===================================================== */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:9000;
+
+    background:
+        rgba(0,0,0,.78);
+
+    backdrop-filter:
+        blur(12px);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+}
+
+.modal.show{
+
+    display:flex;
+}
+
+.modal-box{
+
+    width:
+        min(
+            650px,
+            100%
+        );
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:#10101e;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:25px;
+
+    box-shadow:
+        0 30px 100px
+        rgba(0,0,0,.5);
+}
+
+.modal-head{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:20px;
+}
+
+.close{
+
+    background:#20202d;
+
+    color:white;
+
+    border:0;
+
+    width:36px;
+
+    height:36px;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    font-size:20px;
+}
+
+.close:hover{
+
+    background:#343447;
+}
+
+.input-group{
+
+    margin-bottom:16px;
+}
+
+.input-group label{
+
+    display:block;
+
+    color:#bbb;
+
+    font-size:13px;
+
+    margin-bottom:7px;
+}
+
+.input,
+textarea{
+
+    width:100%;
+
+    background:#080811;
+
+    color:white;
+
+    border:
+        1px solid #2d2d40;
+
+    border-radius:10px;
+
+    padding:12px;
+
+    outline:none;
+
+    font-family:inherit;
+}
+
+textarea{
+
+    min-height:100px;
+
+    resize:vertical;
+}
+
+.input:focus,
+textarea:focus{
+
+    border-color:
+        var(--purple);
+}
+
+.file-row{
+
+    display:flex;
+
+    gap:8px;
+
+    align-items:center;
+}
+
+.file-row .input{
+
+    flex:1;
+}
+
+.cancel-file{
+
+    flex:none;
+
+    padding:
+        11px 13px;
+
+    border-radius:10px;
+
+    border:
+        1px solid rgba(239,68,68,.3);
+
+    background:
+        rgba(239,68,68,.08);
+
+    color:#ff9aaa;
+
+    cursor:pointer;
+
+    white-space:nowrap;
+}
+
+.cancel-file:hover{
+
+    background:
+        rgba(239,68,68,.18);
+}
+
+.content-options{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            1fr
+        );
+
+    gap:10px;
+
+    margin-top:10px;
+}
+
+.option{
+
+    background:#171725;
+
+    border:
+        1px solid #2b2b3d;
+
+    border-radius:10px;
+
+    padding:12px;
+}
+
+.option label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    cursor:pointer;
+}
+
+.option input{
+
+    accent-color:
+        var(--purple);
+}
+
+.dynamic-fields{
+
+    margin-top:20px;
+}
+
+.field-block{
+
+    padding:15px;
+
+    background:#0b0b14;
+
+    border:
+        1px solid #242438;
+
+    border-radius:12px;
+
+    margin-bottom:12px;
+}
+
+.field-block h4{
+
+    margin-bottom:10px;
+
+    color:#cfc7ff;
+}
+
+
+/* =====================================================
+   COMMENT BUTTON
+===================================================== */
+
+#commentButton{
+
+    position:fixed;
+
+    right:20px;
+
+    bottom:20px;
+
+    z-index:15000;
+
+    border:
+        1px solid
+        rgba(139,92,246,.45);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--pink)
+        );
+
+    color:white;
+
+    padding:
+        12px 16px;
+
+    border-radius:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 10px 35px
+        rgba(139,92,246,.28);
+
+    transition:.2s;
+}
+
+#commentButton:hover{
+
+    transform:
+        translateY(-3px);
+
+}
+
+
+/* =====================================================
+   COMMENT MODAL
+===================================================== */
+
+#commentModal{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:16000;
+
+    background:
+        rgba(0,0,0,.78);
+
+    backdrop-filter:
+        blur(12px);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+}
+
+#commentModal.show{
+
+    display:flex;
+
+}
+
+.comment-box{
+
+    width:
+        min(
+            500px,
+            100%
+        );
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:#10101e;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:25px;
+
+    box-shadow:
+        0 30px 100px
+        rgba(0,0,0,.5);
+}
+
+.comment-head{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:20px;
+}
+
+.comment-input{
+
+    width:100%;
+
+    background:#080811;
+
+    color:white;
+
+    border:
+        1px solid #2d2d40;
+
+    border-radius:10px;
+
+    padding:12px;
+
+    outline:none;
+
+    font-family:inherit;
+}
+
+.comment-input:focus{
+
+    border-color:
+        var(--purple);
+
+}
+
+#commentText{
+
+    min-height:120px;
+
+    resize:vertical;
+
+}
+
+.comment-actions{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.comment-actions button{
+
+    flex:1;
+
+}
+
+#commentsList{
+
+    margin-top:25px;
+
+}
+
+.comment-item{
+
+    background:#171725;
+
+    border:
+        1px solid #2b2b3d;
+
+    border-radius:13px;
+
+    padding:14px;
+
+    margin-bottom:10px;
+}
+
+.comment-name{
+
+    font-weight:bold;
+
+    color:#cfc7ff;
+
+    margin-bottom:5px;
+
+}
+
+.comment-message{
+
+    color:var(--muted);
+
+    line-height:1.6;
+
+    white-space:pre-wrap;
+
+}
+
+.comment-date{
+
+    color:#666679;
+
+    font-size:10px;
+
+    margin-top:8px;
+
+}
+
+.comment-delete{
+
+    margin-top:10px;
+
+    border:
+        1px solid
+        rgba(239,68,68,.3);
+
+    background:
+        rgba(239,68,68,.08);
+
+    color:#ff9aaa;
+
+    padding:
+        7px 10px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:11px;
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+#toast{
+
+    position:fixed;
+
+    right:20px;
+
+    bottom:20px;
+
+    z-index:10000;
+
+    background:#171725;
+
+    border:
+        1px solid #343449;
+
+    color:white;
+
+    padding:
+        14px 18px;
+
+    border-radius:12px;
+
+    display:none;
+
+    max-width:350px;
+
+    box-shadow:
+        0 15px 50px
+        rgba(0,0,0,.35);
+}
+
+
+/* =====================================================
+   STARTUP NAME BOX
+===================================================== */
+
+#startupNameScreen{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:30000;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+
+    background:
+        rgba(0,0,0,.18);
+}
+
+.startup-name-box{
+
+    width:
+        min(
+            330px,
+            90vw
+        );
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(25,21,45,.98),
+            rgba(20,18,36,.98)
+        );
+
+    border:
+        1px solid
+        rgba(139,92,246,.38);
+
+    border-radius:20px;
+
+    padding:22px;
+
+    text-align:center;
+
+    box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.55),
+
+        0 0 35px
+        rgba(139,92,246,.10);
+
+    animation:
+        nameBoxIn .35s ease;
+}
+
+@keyframes nameBoxIn{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            scale(.94)
+            translateY(8px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            scale(1)
+            translateY(0);
+
+    }
+
+}
+
+.startup-name-box h2{
+
+    font-size:21px;
+
+    margin-bottom:7px;
+}
+
+.startup-name-box p{
+
+    color:#aaaabd;
+
+    font-size:13px;
+
+    margin-bottom:17px;
+}
+
+.startup-name-input{
+
+    width:100%;
+
+    background:#080811;
+
+    color:white;
+
+    border:
+        1px solid #343449;
+
+    border-radius:11px;
+
+    padding:12px 13px;
+
+    outline:none;
+
+    font-size:14px;
+}
+
+.startup-name-input:focus{
+
+    border-color:
+        var(--purple);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(139,92,246,.10);
+}
+
+.startup-name-button{
+
+    width:100%;
+
+    margin-top:12px;
+
+    border:0;
+
+    border-radius:11px;
+
+    padding:12px;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--pink)
+        );
+
+    box-shadow:
+        0 8px 25px
+        rgba(139,92,246,.20);
+}
+
+.startup-name-error{
+
+    color:#ff8b9b;
+
+    font-size:12px;
+
+    margin-top:8px;
+
+    min-height:15px;
+}
+
+
+/* =====================================================
+   WELCOME MESSAGE
+===================================================== */
+
+#welcomeMessage{
+
+    position:fixed;
+
+    left:50%;
+
+    top:28px;
+
+    transform:
+        translateX(-50%)
+        translateY(-15px);
+
+    z-index:28000;
+
+    display:none;
+
+    width:
+        min(
+            360px,
+            calc(100vw - 30px)
+        );
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(139,92,246,.97),
+            rgba(236,72,153,.97)
+        );
+
+    color:white;
+
+    border:
+        1px solid
+        rgba(255,255,255,.18);
+
+    border-radius:14px;
+
+    padding:
+        13px 17px;
+
+    text-align:center;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.35);
+
+    font-size:14px;
+
+    font-weight:600;
+
+    opacity:0;
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+}
+
+#welcomeMessage.show{
+
+    display:block;
+
+    opacity:1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+
+/* =====================================================
+   NOTIFICATION REQUEST
+===================================================== */
+
+#notificationBar{
+
+    position:fixed;
+
+    top:82px;
+
+    left:50%;
+
+    transform:
+        translateX(-50%)
+        translateY(-12px);
+
+    z-index:27000;
+
+    width:
+        min(
+            540px,
+            calc(100vw - 24px)
+        );
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    padding:
+        12px 14px 12px 16px;
+
+    background:
+        rgba(17,17,33,.96);
+
+    border:
+        1px solid
+        rgba(139,92,246,.32);
+
+    border-radius:15px;
+
+    box-shadow:
+        0 15px 50px
+        rgba(0,0,0,.38);
+
+    backdrop-filter:
+        blur(18px);
+
+    opacity:0;
+
+    transition:
+        opacity .22s ease,
+        transform .22s ease;
+}
+
+#notificationBar.show{
+
+    display:flex;
+
+    opacity:1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+.notification-text{
+
+    min-width:0;
+}
+
+.notification-title{
+
+    font-size:13px;
+
+    font-weight:800;
+
+    margin-bottom:3px;
+}
+
+.notification-description{
+
+    color:#aaaabd;
+
+    font-size:11px;
+
+    line-height:1.4;
+}
+
+.notification-actions{
+
+    display:flex;
+
+    gap:7px;
+
+    flex:none;
+}
+
+.notification-btn{
+
+    border:0;
+
+    border-radius:9px;
+
+    padding:
+        8px 12px;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    color:white;
+}
+
+.notification-allow{
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--pink)
+        );
+}
+
+.notification-deny{
+
+    background:
+        rgba(255,255,255,.07);
+
+    border:
+        1px solid
+        rgba(255,255,255,.10);
+}
+
+.notification-btn:hover{
+
+    transform:translateY(-1px);
+}
+
+
+/* =====================================================
+   THANK YOU NOTIFICATION
+===================================================== */
+
+#notificationThanks{
+
+    position:fixed;
+
+    top:82px;
+
+    left:50%;
+
+    transform:
+        translateX(-50%);
+
+    z-index:27500;
+
+    display:none;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(34,197,94,.96),
+            rgba(6,182,212,.96)
+        );
+
+    color:white;
+
+    border-radius:13px;
+
+    padding:
+        12px 20px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.35);
+}
+
+
+/* =====================================================
+   OFFLINE
+===================================================== */
+
+#offlineOverlay{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:20000;
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    background:#000;
+
+    padding:25px;
+}
+
+.offline-box{
+
+    max-width:480px;
+}
+
+.offline-loader{
+
+    width:45px;
+
+    height:45px;
+
+    border:
+        4px solid #24243a;
+
+    border-top-color:
+        var(--purple);
+
+    border-radius:50%;
+
+    animation:
+        spin .65s linear infinite;
+
+    margin:
+        0 auto 25px;
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:700px){
+
+    nav{
+        display:none;
+    }
+
+    .hero{
+        min-height:560px;
+    }
+
+    .hero h1{
+        letter-spacing:-3px;
+    }
+
+    .content-options{
+        grid-template-columns:1fr;
+    }
+
+    .file-row{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .cancel-file{
+        width:100%;
+    }
+
+    #notificationBar{
+
+        top:70px;
+
+        align-items:flex-start;
+
+    }
+
+    .notification-actions{
+
+        flex-direction:column;
+
+    }
+
+    .notification-btn{
+
+        padding:
+            7px 11px;
+
+    }
+
+    #commentButton{
+
+        right:14px;
+
+        bottom:14px;
+
+        padding:
+            11px 14px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body class="startup-active">
+
+
+<!-- =====================================================
+     STARTUP NAME BOX
+===================================================== -->
+
+<div id="startupNameScreen">
+
+    <div class="startup-name-box">
+
+        <h2>
+            👋 Welcome to SantoLabs
+        </h2>
+
+        <p>
+            Enter your name to continue
+        </p>
+
+        <input
+            id="startupNameInput"
+            class="startup-name-input"
+            type="text"
+            maxlength="40"
+            autocomplete="name"
+            placeholder="Enter your name"
+        >
+
+        <div
+            id="startupNameError"
+            class="startup-name-error"
+        ></div>
+
+        <button
+            class="startup-name-button"
+            onclick="finishStartupName()"
+        >
+            Continue →
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN SITE
+===================================================== -->
+
+<div id="siteContent">
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+<div class="nav">
+
+    <div class="logo">
+        Santo<span>Labs</span>
+    </div>
+
+    <nav id="navigation"></nav>
+
+    <button
+        id="ownerButton"
+        class="owner-btn"
+        onclick="openOwnerLogin()"
+        title="Owner"
+    >
+        +
+    </button>
+
+</div>
+
+</header>
+
+
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<section class="hero">
+
+<div class="hero-inner">
+
+    <div class="badge">
+        ✦ CREATIVE DIGITAL LAB
+    </div>
+
+    <h1>
+        Santo<span class="gradient">Labs</span>
+    </h1>
+
+    <p>
+        Games, websites, apps, experiments,
+        ideas and creative projects — all in one place.
+    </p>
+
+    <div class="hero-buttons">
+
+        <a
+            href="#projects"
+            class="btn btn-primary"
+        >
+            🚀 Explore
+        </a>
+
+        <button
+            class="btn btn-secondary"
+            onclick="askUserName()"
+        >
+            👤 Your Name
+        </button>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     PROJECTS
+===================================================== -->
+
+<section
+    id="projects"
+    style="display:none;"
+>
+
+<div class="section-head">
+
+    <h2>
+        ✨ Projects
+    </h2>
+
+    <p>
+        Your published projects will appear here.
+    </p>
+
+</div>
+
+<div
+    id="projectGrid"
+    class="project-grid"
+></div>
+
+</section>
+
+
+<!-- =====================================================
+     DYNAMIC SECTIONS
+===================================================== -->
+
+<div id="dynamicSections"></div>
+
+
+<!-- =====================================================
+     ABOUT
+===================================================== -->
+
+<div id="aboutSection"></div>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+<div class="footer-logo">
+    SantoLabs
+</div>
+
+<p>
+    CREATE • BUILD • EXPERIMENT • INNOVATE
+</p>
+
+<br>
+
+<p>
+    © 2026 SantoLabs
+</p>
+
+</footer>
+
+
+<!-- =====================================================
+     OWNER LOGIN
+===================================================== -->
+
+<div
+    id="loginModal"
+    class="modal"
+>
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+    <h2>
+        🔐 Owner Login
+    </h2>
+
+    <button
+        class="close"
+        onclick="closeModal('loginModal')"
+    >
+        ×
+    </button>
+
+</div>
+
+<div class="input-group">
+
+<label>
+    Owner Password
+</label>
+
+<input
+    id="ownerPassword"
+    class="input"
+    type="password"
+    placeholder="Enter password"
+    onkeydown="
+        if(event.key==='Enter'){
+            ownerLogin();
+        }
+    "
+>
+
+</div>
+
+<button
+    class="btn btn-primary"
+    onclick="ownerLogin()"
+>
+    🔓 Login
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ADD PROJECT
+===================================================== -->
+
+<div
+    id="addModal"
+    class="modal"
+>
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+    <h2>
+        ＋ New Project
+    </h2>
+
+    <button
+        class="close"
+        onclick="closeModal('addModal')"
+    >
+        ×
+    </button>
+
+</div>
+
+
+<div class="input-group">
+
+<label>
+    Project Icon
+</label>
+
+<div class="file-row">
+
+    <input
+        id="projectIcon"
+        class="input"
+        type="file"
+        accept="image/*"
+    >
+
+    <button
+        type="button"
+        class="cancel-file"
+        onclick="clearFile('projectIcon')"
+    >
+        ❌ Cancel
+    </button>
+
+</div>
+
+</div>
+
+
+<div class="input-group">
+
+<label>
+    Project Name
+</label>
+
+<input
+    id="projectName"
+    class="input"
+    placeholder="Example: SIXER 5.2"
+>
+
+</div>
+
+
+<div class="input-group">
+
+<label>
+    About / Description
+</label>
+
+<textarea
+    id="projectDescription"
+    placeholder="Describe your project..."
+></textarea>
+
+</div>
+
+
+<div class="input-group">
+
+<label>
+    Choose the content you want to add
+</label>
+
+<div class="content-options">
+
+
+<div class="option">
+
+<label>
+
+<input
+    type="checkbox"
+    value="link"
+    onchange="buildFields()"
+>
+
+🔗 Link
+
+</label>
+
+</div>
+
+
+<div class="option">
+
+<label>
+
+<input
+    type="checkbox"
+    value="image"
+    onchange="buildFields()"
+>
+
+🖼️ Image
+
+</label>
+
+</div>
+
+
+<div class="option">
+
+<label>
+
+<input
+    type="checkbox"
+    value="video"
+    onchange="buildFields()"
+>
+
+🎥 Video
+
+</label>
+
+</div>
+
+
+<div class="option">
+
+<label>
+
+<input
+    type="checkbox"
+    value="game"
+    onchange="buildFields()"
+>
+
+🎮 Game
+
+</label>
+
+</div>
+
+
+<div class="option">
+
+<label>
+
+<input
+    type="checkbox"
+    value="web"
+    onchange="buildFields()"
+>
+
+🌐 Web Project
+
+</label>
+
+</div>
+
+
+<div class="option">
+
+<label>
+
+<input
+    type="checkbox"
+    value="instruction"
+    onchange="buildFields()"
+>
+
+📝 Instructions
+
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+    id="dynamicFields"
+    class="dynamic-fields"
+></div>
+
+
+<div
+    style="
+        display:flex;
+        gap:10px;
+        margin-top:15px;
+    "
+>
+
+<button
+    class="btn btn-secondary"
+    style="flex:1;"
+    onclick="closeModal('addModal')"
+>
+    Cancel
+</button>
+
+<button
+    class="btn btn-primary"
+    style="flex:2;"
+    onclick="publishProject()"
+>
+    🚀 Publish
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
+     WELCOME MESSAGE
+===================================================== -->
+
+<div id="welcomeMessage"></div>
+
+
+<!-- =====================================================
+     NOTIFICATION BAR
+===================================================== -->
+
+<div id="notificationBar">
+
+    <div class="notification-text">
+
+        <div class="notification-title">
+            🔔 Stay updated with SantoLabs
+        </div>
+
+        <div class="notification-description">
+            Want to know when a new game or project is added?
+            Allow notifications for easy updates.
+        </div>
+
+    </div>
+
+    <div class="notification-actions">
+
+        <button
+            class="notification-btn notification-allow"
+            onclick="allowNotifications()"
+        >
+            Allow
+        </button>
+
+        <button
+            class="notification-btn notification-deny"
+            onclick="denyNotifications()"
+        >
+            Deny
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     THANK YOU
+===================================================== -->
+
+<div id="notificationThanks">
+    💜 Thank you! Notifications enabled.
+</div>
+
+
+<!-- =====================================================
+     COMMENT BUTTON
+===================================================== -->
+
+<button
+    id="commentButton"
+    onclick="openComments()"
+>
+    💬 Comments
+</button>
+
+
+<!-- =====================================================
+     COMMENT MODAL
+===================================================== -->
+
+<div
+    id="commentModal"
+>
+
+    <div class="comment-box">
+
+        <div class="comment-head">
+
+            <h2>
+                💬 Comments & Ideas
+            </h2>
+
+            <button
+                class="close"
+                onclick="closeComments()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Your Name
+            </label>
+
+            <input
+                id="commentName"
+                class="comment-input"
+                type="text"
+                maxlength="40"
+                placeholder="Enter your name"
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Comment / Idea
+            </label>
+
+            <textarea
+                id="commentText"
+                class="comment-input"
+                maxlength="1000"
+                placeholder="Write your comment or idea..."
+            ></textarea>
+
+        </div>
+
+
+        <div class="comment-actions">
+
+            <button
+                class="btn btn-secondary"
+                onclick="closeComments()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="btn btn-primary"
+                onclick="submitComment()"
+            >
+                💜 Submit
+            </button>
+
+        </div>
+
+
+        <div id="commentsList"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div id="toast"></div>
+
+
+<!-- =====================================================
+     OFFLINE
+===================================================== -->
+
+<div id="offlineOverlay">
+
+<div class="offline-box">
+
+<div class="offline-loader"></div>
+
+<h2>
+    Offline Mode
+</h2>
+
+<p>
+    Internet connection lost.<br>
+    Opening your offline game...
+</p>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+const OWNER_PASSWORD =
+    "matthew77";
+
+const OFFLINE_GAME =
+    "PUBG_Character_Image_Game.html";
+
+const STORAGE_KEY =
+    "SANTOLABS_PROJECTS_V2";
+
+const USER_NAME_KEY =
+    "SANTOLABS_USER_NAME";
+
+const NOTIFICATION_KEY =
+    "SANTOLABS_NOTIFICATION_DECISION";
+
+const COMMENTS_KEY =
+    "SANTOLABS_COMMENTS";
+
+
+let projects =
+    JSON.parse(
+        localStorage.getItem(
+            STORAGE_KEY
+        ) || "[]"
+    );
+
+let ownerLoggedIn =
+    false;
+
+let offlineStarted =
+    false;
+
+let comments =
+    JSON.parse(
+        localStorage.getItem(
+            COMMENTS_KEY
+        ) || "[]"
+    );
+
+
+/* =====================================================
+   SAVE PROJECTS
+===================================================== */
+
+function saveProjects(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(projects)
+    );
+
+}
+
+
+/* =====================================================
+   SAVE COMMENTS
+===================================================== */
+
+function saveComments(){
+
+    localStorage.setItem(
+        COMMENTS_KEY,
+        JSON.stringify(comments)
+    );
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message){
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    toast.innerText =
+        message;
+
+    toast.style.display =
+        "block";
+
+    setTimeout(
+        function(){
+
+            toast.style.display =
+                "none";
+
+        },
+        3000
+    );
+
+}
+
+
+/* =====================================================
+   MODALS
+===================================================== */
+
+function openModal(id){
+
+    const modal =
+        document.getElementById(id);
+
+    if(modal){
+
+        modal.classList.add("show");
+
+    }
+
+}
+
+
+function closeModal(id){
+
+    const modal =
+        document.getElementById(id);
+
+    if(modal){
+
+        modal.classList.remove("show");
+
+    }
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(value){
+
+    return String(value || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* =====================================================
+   SAFE URL
+===================================================== */
+
+function safeURL(url){
+
+    if(!url){
+
+        return "#";
+
+    }
+
+    const value =
+        String(url).trim();
+
+    if(
+        value
+        .toLowerCase()
+        .startsWith("javascript:")
+    ){
+
+        return "#";
+
+    }
+
+    return value;
+
+}
+
+
+/* =====================================================
+   OWNER LOGIN
+===================================================== */
+
+function openOwnerLogin(){
+
+    if(ownerLoggedIn){
+
+        openModal("addModal");
+
+    }else{
+
+        document
+            .getElementById(
+                "ownerPassword"
+            )
+            .value = "";
+
+        openModal("loginModal");
+
+        setTimeout(
+            function(){
+
+                document
+                    .getElementById(
+                        "ownerPassword"
+                    )
+                    .focus();
+
+            },
+            100
+        );
+
+    }
+
+}
+
+
+function ownerLogin(){
+
+    const password =
+        document
+        .getElementById(
+            "ownerPassword"
+        )
+        .value;
+
+    if(password === OWNER_PASSWORD){
+
+        ownerLoggedIn =
+            true;
+
+        closeModal(
+            "loginModal"
+        );
+
+        document
+            .getElementById(
+                "ownerButton"
+            )
+            .innerText = "＋";
+
+        showToast(
+            "Owner mode enabled."
+        );
+
+        openModal(
+            "addModal"
+        );
+
+        renderComments();
+
+    }else{
+
+        showToast(
+            "❌ Incorrect password."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CLEAR FILE
+===================================================== */
+
+function clearFile(inputId){
+
+    const input =
+        document.getElementById(
+            inputId
+        );
+
+    if(input){
+
+        input.value = "";
+
+        showToast(
+            "❌ File selection cancelled."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   SELECTED TYPES
+===================================================== */
+
+function getSelectedTypes(){
+
+    return Array.from(
+
+        document.querySelectorAll(
+            ".content-options input:checked"
+        )
+
+    ).map(
+        input => input.value
+    );
+
+}
+
+
+/* =====================================================
+   DYNAMIC FORM
+===================================================== */
+
+function buildFields(){
+
+    const box =
+        document.getElementById(
+            "dynamicFields"
+        );
+
+    box.innerHTML = "";
+
+    const types =
+        getSelectedTypes();
+
+
+    if(types.includes("link")){
+
+        box.innerHTML += `
+
+        <div class="field-block">
+
+            <h4>🔗 Link</h4>
+
+            <input
+                id="linkTitle"
+                class="input"
+                placeholder="Link name"
+            >
+
+            <br><br>
+
+            <input
+                id="linkURL"
+                class="input"
+                placeholder="https://example.com"
+            >
+
+        </div>
+
+        `;
+
+    }
+
+
+    if(types.includes("image")){
+
+        box.innerHTML += `
+
+        <div class="field-block">
+
+            <h4>🖼️ Image</h4>
+
+            <div class="file-row">
+
+                <input
+                    id="contentImage"
+                    class="input"
+                    type="file"
+                    accept="image/*"
+                >
+
+                <button
+                    type="button"
+                    class="cancel-file"
+                    onclick="clearFile('contentImage')"
+                >
+                    ❌ Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    }
+
+
+    if(types.includes("video")){
+
+        box.innerHTML += `
+
+        <div class="field-block">
+
+            <h4>🎥 Video</h4>
+
+            <div class="file-row">
+
+                <input
+                    id="contentVideo"
+                    class="input"
+                    type="file"
+                    accept="video/*"
+                >
+
+                <button
+                    type="button"
+                    class="cancel-file"
+                    onclick="clearFile('contentVideo')"
+                >
+                    ❌ Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    }
+
+
+    if(types.includes("game")){
+
+        box.innerHTML += `
+
+        <div class="field-block">
+
+            <h4>🎮 Game</h4>
+
+            <input
+                id="gameTitle"
+                class="input"
+                placeholder="Game name"
+            >
+
+            <br><br>
+
+            <input
+                id="gameURL"
+                class="input"
+                placeholder="game.html"
+            >
+
+        </div>
+
+        `;
+
+    }
+
+
+    if(types.includes("web")){
+
+        box.innerHTML += `
+
+        <div class="field-block">
+
+            <h4>🌐 Web Project</h4>
+
+            <input
+                id="webTitle"
+                class="input"
+                placeholder="Website name"
+            >
+
+            <br><br>
+
+            <input
+                id="webURL"
+                class="input"
+                placeholder="https://example.com"
+            >
+
+        </div>
+
+        `;
+
+    }
+
+
+    if(types.includes("instruction")){
+
+        box.innerHTML += `
+
+        <div class="field-block">
+
+            <h4>📝 Instructions</h4>
+
+            <textarea
+                id="instructionText"
+                placeholder="Write your instructions..."
+            ></textarea>
+
+        </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   FILE READER
+===================================================== */
+
+function fileToDataURL(file){
+
+    return new Promise(
+        function(resolve,reject){
+
+            if(!file){
+
+                resolve("");
+
+                return;
+
+            }
+
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                function(){
+
+                    resolve(
+                        reader.result
+                    );
+
+                };
+
+            reader.onerror =
+                reject;
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PUBLISH
+===================================================== */
+
+async function publishProject(){
+
+    if(!ownerLoggedIn){
+
+        showToast(
+            "Owner login required."
+        );
+
+        return;
+
+    }
+
+
+    const name =
+        document
+        .getElementById(
+            "projectName"
+        )
+        .value
+        .trim();
+
+
+    if(!name){
+
+        showToast(
+            "Enter a project name."
+        );
+
+        return;
+
+    }
+
+
+    const description =
+        document
+        .getElementById(
+            "projectDescription"
+        )
+        .value
+        .trim();
+
+
+    const iconFile =
+        document
+        .getElementById(
+            "projectIcon"
+        )
+        .files[0];
+
+
+    const icon =
+        await fileToDataURL(
+            iconFile
+        );
+
+
+    const project = {
+
+        id:Date.now(),
+
+        name:name,
+
+        description:description,
+
+        icon:icon,
+
+        link:null,
+
+        image:null,
+
+        video:null,
+
+        game:null,
+
+        web:null,
+
+        instruction:null
+
+    };
+
+
+    const types =
+        getSelectedTypes();
+
+
+    if(types.includes("link")){
+
+        project.link = {
+
+            title:
+                document
+                .getElementById(
+                    "linkTitle"
+                )
+                .value
+                .trim(),
+
+            url:
+                document
+                .getElementById(
+                    "linkURL"
+                )
+                .value
+                .trim()
+
+        };
+
+    }
+
+
+    if(types.includes("image")){
+
+        const file =
+            document
+            .getElementById(
+                "contentImage"
+            )
+            .files[0];
+
+
+        if(file){
+
+            project.image = {
+
+                data:
+                    await fileToDataURL(
+                        file
+                    ),
+
+                name:
+                    file.name
+
+            };
+
+        }
+
+    }
+
+
+    if(types.includes("video")){
+
+        const file =
+            document
+            .getElementById(
+                "contentVideo"
+            )
+            .files[0];
+
+
+        if(file){
+
+            project.video = {
+
+                data:
+                    await fileToDataURL(
+                        file
+                    ),
+
+                name:
+                    file.name
+
+            };
+
+        }
+
+    }
+
+
+    if(types.includes("game")){
+
+        project.game = {
+
+            title:
+                document
+                .getElementById(
+                    "gameTitle"
+                )
+                .value
+                .trim(),
+
+            url:
+                document
+                .getElementById(
+                    "gameURL"
+                )
+                .value
+                .trim()
+
+        };
+
+    }
+
+
+    if(types.includes("web")){
+
+        project.web = {
+
+            title:
+                document
+                .getElementById(
+                    "webTitle"
+                )
+                .value
+                .trim(),
+
+            url:
+                document
+                .getElementById(
+                    "webURL"
+                )
+                .value
+                .trim()
+
+        };
+
+    }
+
+
+    if(types.includes("instruction")){
+
+        project.instruction =
+            document
+            .getElementById(
+                "instructionText"
+            )
+            .value
+            .trim();
+
+    }
+
+
+    projects.push(
+        project
+    );
+
+
+    saveProjects();
+
+    closeModal(
+        "addModal"
+    );
+
+    resetForm();
+
+    renderEverything();
+
+    showToast(
+        "🚀 Published successfully!"
+    );
+
+}
+
+
+/* =====================================================
+   RESET FORM
+===================================================== */
+
+function resetForm(){
+
+    document
+        .getElementById(
+            "projectIcon"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "projectName"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "projectDescription"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "dynamicFields"
+        )
+        .innerHTML = "";
+
+
+    document
+        .querySelectorAll(
+            ".content-options input"
+        )
+        .forEach(
+            input =>
+            input.checked = false
+        );
+
+}
+
+
+/* =====================================================
+   DELETE PROJECT
+===================================================== */
+
+function deleteProject(projectId){
+
+    if(!ownerLoggedIn){
+
+        showToast(
+            "🔐 Owner login required."
+        );
+
+        return;
+
+    }
+
+
+    const project =
+        projects.find(
+            p => p.id === projectId
+        );
+
+
+    if(!project){
+
+        showToast(
+            "Project not found."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+
+            "Delete \"" +
+            project.name +
+            "\"?\n\n" +
+
+            "This will permanently remove:\n" +
+
+            "• Project icon\n" +
+            "• Project name\n" +
+            "• Description\n" +
+            "• Links\n" +
+            "• Images\n" +
+            "• Videos\n" +
+            "• Games\n" +
+            "• Web projects\n" +
+            "• Instructions\n\n" +
+
+            "Continue?"
+
+        );
+
+
+    if(!confirmed){
+
+        return;
+
+    }
+
+
+    projects =
+        projects.filter(
+            p => p.id !== projectId
+        );
+
+
+    saveProjects();
+
+    renderEverything();
+
+    showToast(
+        "🗑️ Project deleted successfully."
+    );
+
+}
+
+
+/* =====================================================
+   PROJECT CARDS
+===================================================== */
+
+function renderProjects(){
+
+    const box =
+        document.getElementById(
+            "projectGrid"
+        );
+
+    const projectSection =
+        document.getElementById(
+            "projects"
+        );
+
+
+    if(projects.length === 0){
+
+        projectSection.style.display =
+            "none";
+
+        box.innerHTML = "";
+
+        return;
+
+    }
+
+
+    projectSection.style.display =
+        "block";
+
+
+    box.innerHTML =
+        projects.map(
+            project => {
+
+                let buttons = "";
+
+
+                if(project.link){
+
+                    buttons += `
+
+                    <button
+                        class="project-button"
+                        onclick="jumpTo('links')"
+                    >
+                        🔗 Link
+                    </button>
+
+                    `;
+
+                }
+
+
+                if(
+                    project.image &&
+                    project.image.data
+                ){
+
+                    buttons += `
+
+                    <button
+                        class="project-button"
+                        onclick="jumpTo('images')"
+                    >
+                        🖼️ Image
+                    </button>
+
+                    `;
+
+                }
+
+
+                if(
+                    project.video &&
+                    project.video.data
+                ){
+
+                    buttons += `
+
+                    <button
+                        class="project-button"
+                        onclick="jumpTo('videos')"
+                    >
+                        🎥 Video
+                    </button>
+
+                    `;
+
+                }
+
+
+                if(project.game){
+
+                    buttons += `
+
+                    <button
+                        class="project-button"
+                        onclick="jumpTo('games')"
+                    >
+                        🎮 Game
+                    </button>
+
+                    `;
+
+                }
+
+
+                if(project.web){
+
+                    buttons += `
+
+                    <button
+                        class="project-button"
+                        onclick="jumpTo('webprojects')"
+                    >
+                        🌐 Web
+                    </button>
+
+                    `;
+
+                }
+
+
+                if(project.instruction){
+
+                    buttons += `
+
+                    <button
+                        class="project-button"
+                        onclick="jumpTo('instructions')"
+                    >
+                        📝 Instructions
+                    </button>
+
+                    `;
+
+                }
+
+
+                buttons += `
+
+                <button
+                    class="project-button delete-button"
+                    onclick="deleteProject(${project.id})"
+                >
+                    🗑️ Delete
+                </button>
+
+                `;
+
+
+                const icon =
+                    project.icon
+
+                    ?
+
+                    `<img
+                        class="project-icon"
+                        src="${project.icon}"
+                        alt="${escapeHTML(project.name)}"
+                    >`
+
+                    :
+
+                    `<div
+                        class="project-icon-placeholder"
+                    >
+                        ✦
+                    </div>`;
+
+
+                return `
+
+                <article
+                    class="project-card"
+                >
+
+                    <div
+                        class="project-top"
+                    >
+
+                        ${icon}
+
+                        <div>
+
+                            <div
+                                class="project-name"
+                            >
+                                ${escapeHTML(
+                                    project.name
+                                )}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    ${
+                        project.description
+
+                        ?
+
+                        `
+                        <div
+                            class="project-description"
+                        >
+                            ${escapeHTML(
+                                project.description
+                            )}
+                        </div>
+                        `
+
+                        :
+
+                        ""
+                    }
+
+
+                    <div
+                        class="project-buttons"
+                    >
+
+                        ${buttons}
+
+                    </div>
+
+                </article>
+
+                `;
+
+            }
+
+        ).join("");
+
+}
+
+
+/* =====================================================
+   DYNAMIC SECTIONS
+===================================================== */
+
+function renderDynamicSections(){
+
+    const root =
+        document.getElementById(
+            "dynamicSections"
+        );
+
+
+    root.innerHTML = "";
+
+
+    const hasLinks =
+        projects.some(
+            p =>
+            p.link &&
+            p.link.url
+        );
+
+
+    const hasImages =
+        projects.some(
+            p =>
+            p.image &&
+            p.image.data
+        );
+
+
+    const hasVideos =
+        projects.some(
+            p =>
+            p.video &&
+            p.video.data
+        );
+
+
+    const hasGames =
+        projects.some(
+            p =>
+            p.game &&
+            p.game.url
+        );
+
+
+    const hasWeb =
+        projects.some(
+            p =>
+            p.web &&
+            p.web.url
+        );
+
+
+    const hasInstructions =
+        projects.some(
+            p =>
+            p.instruction &&
+            p.instruction.trim()
+        );
+
+
+    if(hasLinks){
+
+        root.innerHTML +=
+            createSection(
+                "links",
+                "🔗 Links",
+                "linksContainer"
+            );
+
+    }
+
+
+    if(hasImages){
+
+        root.innerHTML +=
+            createSection(
+                "images",
+                "🖼️ Images",
+                "imagesContainer"
+            );
+
+    }
+
+
+    if(hasVideos){
+
+        root.innerHTML +=
+            createSection(
+                "videos",
+                "🎥 Videos",
+                "videosContainer"
+            );
+
+    }
+
+
+    if(hasGames){
+
+        root.innerHTML +=
+            createSection(
+                "games",
+                "🎮 Games",
+                "gamesContainer"
+            );
+
+    }
+
+
+    if(hasWeb){
+
+        root.innerHTML +=
+            createSection(
+                "webprojects",
+                "🌐 Web Projects",
+                "webProjectsContainer"
+            );
+
+    }
+
+
+    if(hasInstructions){
+
+        root.innerHTML +=
+            createSection(
+                "instructions",
+                "📝 Instructions",
+                "instructionsContainer"
+            );
+
+    }
+
+
+    if(hasLinks)
+        renderLinks();
+
+    if(hasImages)
+        renderImages();
+
+    if(hasVideos)
+        renderVideos();
+
+    if(hasGames)
+        renderGames();
+
+    if(hasWeb)
+        renderWebProjects();
+
+    if(hasInstructions)
+        renderInstructions();
+
+
+    renderNavigation(
+        hasLinks,
+        hasImages,
+        hasVideos,
+        hasGames,
+        hasWeb,
+        hasInstructions
+    );
+
+}
+
+
+/* =====================================================
+   CREATE SECTION
+===================================================== */
+
+function createSection(
+    id,
+    title,
+    containerId
+){
+
+    return `
+
+    <section id="${id}">
+
+        <div class="section-head">
+
+            <h2>
+                ${title}
+            </h2>
+
+            <p>
+                Content published through SantoLabs.
+            </p>
+
+        </div>
+
+        <div
+            id="${containerId}"
+            class="content-grid"
+        ></div>
+
+    </section>
+
+    `;
+
+}
+
+
+/* =====================================================
+   LINKS
+===================================================== */
+
+function renderLinks(){
+
+    const box =
+        document.getElementById(
+            "linksContainer"
+        );
+
+
+    const items =
+        projects.filter(
+            p =>
+            p.link &&
+            p.link.url
+        );
+
+
+    box.innerHTML =
+        items.map(
+            p => `
+
+            <div
+                class="content-card"
+            >
+
+                <div
+                    class="content-body"
+                >
+
+                    <h3>
+                        🔗 ${escapeHTML(
+                            p.link.title ||
+                            p.name
+                        )}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(
+                            p.name
+                        )}
+                    </p>
+
+                    <a
+                        class="content-link"
+                        href="${safeURL(
+                            p.link.url
+                        )}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Open Link →
+                    </a>
+
+                </div>
+
+            </div>
+
+            `
+        ).join("");
+
+}
+
+
+/* =====================================================
+   IMAGES
+===================================================== */
+
+function renderImages(){
+
+    const box =
+        document.getElementById(
+            "imagesContainer"
+        );
+
+
+    const items =
+        projects.filter(
+            p =>
+            p.image &&
+            p.image.data
+        );
+
+
+    box.innerHTML =
+        items.map(
+            p => `
+
+            <div
+                class="content-card"
+            >
+
+                <img
+                    src="${p.image.data}"
+                    alt="${escapeHTML(
+                        p.name
+                    )}"
+                >
+
+                <div
+                    class="content-body"
+                >
+
+                    <h3>
+                        🖼️ ${escapeHTML(
+                            p.name
+                        )}
+                    </h3>
+
+                </div>
+
+            </div>
+
+            `
+        ).join("");
+
+}
+
+
+/* =====================================================
+   VIDEOS
+===================================================== */
+
+function renderVideos(){
+
+    const box =
+        document.getElementById(
+            "videosContainer"
+        );
+
+
+    const items =
+        projects.filter(
+            p =>
+            p.video &&
+            p.video.data
+        );
+
+
+    box.innerHTML =
+        items.map(
+            p => `
+
+            <div
+                class="content-card"
+            >
+
+                <video
+                    controls
+                    preload="metadata"
+                    src="${p.video.data}"
+                ></video>
+
+                <div
+                    class="content-body"
+                >
+
+                    <h3>
+                        🎥 ${escapeHTML(
+                            p.name
+                        )}
+                    </h3>
+
+                </div>
+
+            </div>
+
+            `
+        ).join("");
+
+}
+
+
+/* =====================================================
+   GAMES
+===================================================== */
+
+function renderGames(){
+
+    const box =
+        document.getElementById(
+            "gamesContainer"
+        );
+
+
+    const items =
+        projects.filter(
+            p =>
+            p.game &&
+            p.game.url
+        );
+
+
+    box.innerHTML =
+        items.map(
+            p => `
+
+            <div
+                class="content-card"
+            >
+
+                <div
+                    class="content-body"
+                >
+
+                    <h3>
+                        🎮 ${escapeHTML(
+                            p.game.title ||
+                            p.name
+                        )}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(
+                            p.name
+                        )}
+                    </p>
+
+                    <a
+                        class="content-link"
+                        href="${safeURL(
+                            p.game.url
+                        )}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Play Game →
+                    </a>
+
+                </div>
+
+            </div>
+
+            `
+        ).join("");
+
+}
+
+
+/* =====================================================
+   WEB PROJECTS
+===================================================== */
+
+function renderWebProjects(){
+
+    const box =
+        document.getElementById(
+            "webProjectsContainer"
+        );
+
+
+    const items =
+        projects.filter(
+            p =>
+            p.web &&
+            p.web.url
+        );
+
+
+    box.innerHTML =
+        items.map(
+            p => `
+
+            <div
+                class="content-card"
+            >
+
+                <div
+                    class="content-body"
+                >
+
+                    <h3>
+                        🌐 ${escapeHTML(
+                            p.web.title ||
+                            p.name
+                        )}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(
+                            p.name
+                        )}
+                    </p>
+
+                    <a
+                        class="content-link"
+                        href="${safeURL(
+                            p.web.url
+                        )}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Open Website →
+                    </a>
+
+                </div>
+
+            </div>
+
+            `
+        ).join("");
+
+}
+
+
+/* =====================================================
+   INSTRUCTIONS
+===================================================== */
+
+function renderInstructions(){
+
+    const box =
+        document.getElementById(
+            "instructionsContainer"
+        );
+
+
+    const items =
+        projects.filter(
+            p =>
+            p.instruction &&
+            p.instruction.trim()
+        );
+
+
+    box.innerHTML =
+        items.map(
+            p => `
+
+            <div
+                class="content-card"
+            >
+
+                <div
+                    class="content-body"
+                >
+
+                    <h3>
+                        📝 ${escapeHTML(
+                            p.name
+                        )}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(
+                            p.instruction
+                        )}
+                    </p>
+
+                </div>
+
+            </div>
+
+            `
+        ).join("");
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function renderNavigation(
+    links,
+    images,
+    videos,
+    games,
+    web,
+    instructions
+){
+
+    const nav =
+        document.getElementById(
+            "navigation"
+        );
+
+
+    let html = "";
+
+
+    if(projects.length > 0){
+
+        html += `
+            <a href="#projects">
+                Projects
+            </a>
+        `;
+
+    }
+
+
+    if(links){
+
+        html += `
+            <a href="#links">
+                Links
+            </a>
+        `;
+
+    }
+
+
+    if(images){
+
+        html += `
+            <a href="#images">
+                Images
+            </a>
+        `;
+
+    }
+
+
+    if(videos){
+
+        html += `
+            <a href="#videos">
+                Videos
+            </a>
+        `;
+
+    }
+
+
+    if(games){
+
+        html += `
+            <a href="#games">
+                Games
+            </a>
+        `;
+
+    }
+
+
+    if(web){
+
+        html += `
+            <a href="#webprojects">
+                Web
+            </a>
+        `;
+
+    }
+
+
+    if(instructions){
+
+        html += `
+            <a href="#instructions">
+                Instructions
+            </a>
+        `;
+
+    }
+
+
+    nav.innerHTML =
+        html;
+
+}
+
+
+/* =====================================================
+   ABOUT
+===================================================== */
+
+function renderAbout(){
+
+    const box =
+        document.getElementById(
+            "aboutSection"
+        );
+
+
+    const descriptions =
+        projects.filter(
+            p =>
+            p.description &&
+            p.description.trim()
+        );
+
+
+    if(descriptions.length === 0){
+
+        box.innerHTML = "";
+
+        return;
+
+    }
+
+
+    box.innerHTML = `
+
+    <section id="about">
+
+        <div class="section-head">
+
+            <h2>
+                👨‍💻 About
+            </h2>
+
+            <p>
+                Project descriptions and information.
+            </p>
+
+        </div>
+
+        <div class="content-grid">
+
+            ${descriptions.map(
+                p => `
+
+                <div
+                    class="content-card"
+                >
+
+                    <div
+                        class="content-body"
+                    >
+
+                        <h3>
+                            ${escapeHTML(
+                                p.name
+                            )}
+                        </h3>
+
+                        <p>
+                            ${escapeHTML(
+                                p.description
+                            )}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                `
+            ).join("")}
+
+        </div>
+
+    </section>
+
+    `;
+
+}
+
+
+/* =====================================================
+   COMMENTS
+===================================================== */
+
+function openComments(){
+
+    const modal =
+        document.getElementById(
+            "commentModal"
+        );
+
+
+    const savedName =
+        localStorage.getItem(
+            USER_NAME_KEY
+        ) || "";
+
+
+    document
+        .getElementById(
+            "commentName"
+        )
+        .value =
+            savedName;
+
+
+    document
+        .getElementById(
+            "commentText"
+        )
+        .value = "";
+
+
+    renderComments();
+
+
+    modal.classList.add(
+        "show"
+    );
+
+}
+
+
+function closeComments(){
+
+    document
+        .getElementById(
+            "commentModal"
+        )
+        .classList.remove(
+            "show"
+        );
+
+}
+
+
+function submitComment(){
+
+    const name =
+        document
+        .getElementById(
+            "commentName"
+        )
+        .value
+        .trim();
+
+
+    const text =
+        document
+        .getElementById(
+            "commentText"
+        )
+        .value
+        .trim();
+
+
+    if(!name){
+
+        showToast(
+            "Please enter your name."
+        );
+
+        return;
+
+    }
+
+
+    if(!text){
+
+        showToast(
+            "Please write a comment."
+        );
+
+        return;
+
+    }
+
+
+    comments.push({
+
+        id:Date.now(),
+
+        name:name,
+
+        text:text,
+
+        date:new Date()
+            .toLocaleString()
+
+    });
+
+
+    saveComments();
+
+
+    document
+        .getElementById(
+            "commentText"
+        )
+        .value = "";
+
+
+    renderComments();
+
+
+    showToast(
+        "💜 Comment added successfully!"
+    );
+
+}
+
+
+function renderComments(){
+
+    const box =
+        document.getElementById(
+            "commentsList"
+        );
+
+
+    if(!box){
+
+        return;
+
+    }
+
+
+    if(comments.length === 0){
+
+        box.innerHTML = `
+
+            <div
+                style="
+                    text-align:center;
+                    color:#77778b;
+                    padding:20px 5px;
+                "
+            >
+
+                No comments yet.<br>
+
+                Be the first to share an idea! 💜
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    box.innerHTML =
+
+        comments
+        .slice()
+        .reverse()
+        .map(
+
+            comment => `
+
+            <div
+                class="comment-item"
+            >
+
+                <div
+                    class="comment-name"
+                >
+
+                    👤 ${escapeHTML(
+                        comment.name
+                    )}
+
+                </div>
+
+
+                <div
+                    class="comment-message"
+                >
+
+                    ${escapeHTML(
+                        comment.text
+                    )}
+
+                </div>
+
+
+                <div
+                    class="comment-date"
+                >
+
+                    ${escapeHTML(
+                        comment.date
+                    )}
+
+                </div>
+
+
+                ${
+                    ownerLoggedIn
+
+                    ?
+
+                    `
+
+                    <button
+                        class="comment-delete"
+                        onclick="
+                            deleteComment(
+                                ${comment.id}
+                            )
+                        "
+                    >
+
+                        🗑️ Delete
+
+                    </button>
+
+                    `
+
+                    :
+
+                    ""
+
+                }
+
+            </div>
+
+            `
+
+        )
+        .join("");
+
+}
+
+
+function deleteComment(id){
+
+    if(!ownerLoggedIn){
+
+        showToast(
+            "🔐 Owner login required."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "Delete this comment?"
+        );
+
+
+    if(!confirmed){
+
+        return;
+
+    }
+
+
+    comments =
+        comments.filter(
+            comment =>
+                comment.id !== id
+        );
+
+
+    saveComments();
+
+
+    renderComments();
+
+
+    showToast(
+        "🗑️ Comment deleted."
+    );
+
+}
+
+
+/* =====================================================
+   COMPLETE RENDER
+===================================================== */
+
+function renderEverything(){
+
+    renderProjects();
+
+    renderDynamicSections();
+
+    renderAbout();
+
+}
+
+
+/* =====================================================
+   NORMAL NAME BUTTON
+===================================================== */
+
+function askUserName(){
+
+    document
+        .getElementById(
+            "startupNameInput"
+        )
+        .value =
+            localStorage.getItem(
+                USER_NAME_KEY
+            ) || "";
+
+
+    document
+        .getElementById(
+            "startupNameScreen"
+        )
+        .style.display =
+            "flex";
+
+
+    document.body.classList.add(
+        "startup-active"
+    );
+
+}
+
+
+function saveUserName(){
+
+    const input =
+        document.getElementById(
+            "startupNameInput"
+        );
+
+
+    const name =
+        input.value.trim();
+
+
+    if(!name){
+
+        showToast(
+            "Enter your name."
+        );
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        USER_NAME_KEY,
+        name
+    );
+
+
+    document
+        .getElementById(
+            "startupNameScreen"
+        )
+        .style.display =
+            "none";
+
+
+    document.body.classList.remove(
+        "startup-active"
+    );
+
+
+    showWelcome(
+        name
+    );
+
+}
+
+
+/* =====================================================
+   STARTUP NAME
+===================================================== */
+
+function finishStartupName(){
+
+    const input =
+        document.getElementById(
+            "startupNameInput"
+        );
+
+
+    const error =
+        document.getElementById(
+            "startupNameError"
+        );
+
+
+    const name =
+        input.value.trim();
+
+
+    if(!name){
+
+        error.innerText =
+            "Please enter your name.";
+
+        input.focus();
+
+        return;
+
+    }
+
+
+    error.innerText = "";
+
+
+    localStorage.setItem(
+        USER_NAME_KEY,
+        name
+    );
+
+
+    const screen =
+        document.getElementById(
+            "startupNameScreen"
+        );
+
+
+    screen.style.opacity =
+        "0";
+
+
+    screen.style.transition =
+        "opacity .25s ease";
+
+
+    setTimeout(
+        function(){
+
+            screen.style.display =
+                "none";
+
+
+            document.body.classList.remove(
+                "startup-active"
+            );
+
+
+            showWelcome(
+                name
+            );
+
+        },
+        250
+    );
+
+}
+
+
+/* =====================================================
+   WELCOME
+===================================================== */
+
+function showWelcome(name){
+
+    const welcome =
+        document.getElementById(
+            "welcomeMessage"
+        );
+
+
+    welcome.innerHTML =
+        "✨ Welcome to SantoLabs, " +
+        escapeHTML(name) +
+        "!";
+
+
+    welcome.style.display =
+        "block";
+
+
+    requestAnimationFrame(
+        function(){
+
+            welcome.classList.add(
+                "show"
+            );
+
+        }
+    );
+
+
+    setTimeout(
+        function(){
+
+            welcome.classList.remove(
+                "show"
+            );
+
+
+            setTimeout(
+                function(){
+
+                    welcome.style.display =
+                        "none";
+
+
+                    showNotificationChoice();
+
+                },
+                250
+            );
+
+        },
+        2500
+    );
+
+}
+
+
+/* =====================================================
+   NOTIFICATION CHOICE
+===================================================== */
+
+function showNotificationChoice(){
+
+    const previous =
+        localStorage.getItem(
+            NOTIFICATION_KEY
+        );
+
+
+    if(previous){
+
+        return;
+
+    }
+
+
+    const bar =
+        document.getElementById(
+            "notificationBar"
+        );
+
+
+    bar.style.display =
+        "flex";
+
+
+    requestAnimationFrame(
+        function(){
+
+            bar.classList.add(
+                "show"
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   ALLOW NOTIFICATIONS
+===================================================== */
+
+async function allowNotifications(){
+
+    localStorage.setItem(
+        NOTIFICATION_KEY,
+        "allow"
+    );
+
+
+    const bar =
+        document.getElementById(
+            "notificationBar"
+        );
+
+
+    bar.classList.remove(
+        "show"
+    );
+
+
+    setTimeout(
+        function(){
+
+            bar.style.display =
+                "none";
+
+        },
+        220
+    );
+
+
+    if(
+        "Notification" in window
+    ){
+
+        try{
+
+            const permission =
+                await Notification.requestPermission();
+
+
+            if(permission === "granted"){
+
+                showNotificationThanks();
+
+            }else{
+
+                showNotificationThanks(
+                    "🔕 Notifications are currently off."
+                );
+
+            }
+
+        }catch(error){
+
+            showNotificationThanks();
+
+        }
+
+    }else{
+
+        showNotificationThanks();
+
+    }
+
+}
+
+
+/* =====================================================
+   DENY NOTIFICATIONS
+===================================================== */
+
+function denyNotifications(){
+
+    localStorage.setItem(
+        NOTIFICATION_KEY,
+        "deny"
+    );
+
+
+    const bar =
+        document.getElementById(
+            "notificationBar"
+        );
+
+
+    bar.style.opacity =
+        "0";
+
+
+    bar.style.transform =
+        "translateX(-50%) translateY(-8px)";
+
+
+    setTimeout(
+        function(){
+
+            bar.style.display =
+                "none";
+
+
+            bar.classList.remove(
+                "show"
+            );
+
+        },
+        500
+    );
+
+}
+
+
+/* =====================================================
+   THANK YOU
+===================================================== */
+
+function showNotificationThanks(
+    message
+){
+
+    const box =
+        document.getElementById(
+            "notificationThanks"
+        );
+
+
+    box.innerText =
+        message ||
+        "💜 Thank you! Notifications enabled.";
+
+
+    box.style.display =
+        "block";
+
+
+    setTimeout(
+        function(){
+
+            box.style.display =
+                "none";
+
+        },
+        2000
+    );
+
+}
+
+
+/* =====================================================
+   JUMP
+===================================================== */
+
+function jumpTo(id){
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if(element){
+
+        element.scrollIntoView({
+            behavior:"smooth"
+        });
+
+    }
+
+}
+
+
+/* =====================================================
+   CLOSE MODALS OUTSIDE
+===================================================== */
+
+document
+    .querySelectorAll(".modal")
+    .forEach(
+        modal => {
+
+            modal.addEventListener(
+                "click",
+                function(event){
+
+                    if(
+                        event.target === modal
+                    ){
+
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+/* =====================================================
+   COMMENT MODAL OUTSIDE CLICK
+===================================================== */
+
+document
+    .getElementById(
+        "commentModal"
+    )
+    .addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target === this
+            ){
+
+                closeComments();
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   ENTER KEY FOR STARTUP NAME
+===================================================== */
+
+document
+    .getElementById(
+        "startupNameInput"
+    )
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(event.key === "Enter"){
+
+                finishStartupName();
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   ENTER KEY FOR COMMENT
+===================================================== */
+
+document
+    .getElementById(
+        "commentName"
+    )
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                event.key === "Enter"
+            ){
+
+                document
+                    .getElementById(
+                        "commentText"
+                    )
+                    .focus();
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   OFFLINE MODE
+===================================================== */
+
+function openOfflineGame(){
+
+    if(offlineStarted){
+
+        return;
+
+    }
+
+
+    offlineStarted =
+        true;
+
+
+    document
+        .getElementById(
+            "offlineOverlay"
+        )
+        .style.display =
+            "flex";
+
+
+    setTimeout(
+        function(){
+
+            window.location.replace(
+                OFFLINE_GAME
+            );
+
+        },
+        600
+    );
+
+}
+
+
+window.addEventListener(
+    "offline",
+    function(){
+
+        openOfflineGame();
+
+    }
+);
+
+
+if(!navigator.onLine){
+
+    openOfflineGame();
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+renderEverything();
+
+renderComments();
+
+
+const existingName =
+    localStorage.getItem(
+        USER_NAME_KEY
+    );
+
+
+if(existingName){
+
+    document
+        .getElementById(
+            "startupNameScreen"
+        )
+        .style.display =
+            "none";
+
+
+    document.body.classList.remove(
+        "startup-active"
+    );
+
+}else{
+
+    setTimeout(
+        function(){
+
+            document
+                .getElementById(
+                    "startupNameInput"
+                )
+                .focus();
+
+        },
+        350
+    );
+
+}
+
+</script>
+<footer><h4>DM for App @ika chudama in instagram</h4></footer>
+</body>
+</html>
